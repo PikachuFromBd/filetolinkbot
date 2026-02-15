@@ -6,7 +6,7 @@
 // ============================================
 // ⚙️ CONFIGURATION — Update this when VPS changes
 // ============================================
-const BACKEND_ORIGIN = "http://YOUR_VPS_IP:8080";
+const BACKEND_ORIGIN = "http://sex:8080";
 // Example: const BACKEND_ORIGIN = "http://123.456.789.10:8080";
 // Example: const BACKEND_ORIGIN = "https://yourdomain.com";
 // ============================================
