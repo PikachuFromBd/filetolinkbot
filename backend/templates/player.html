@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ file_name }} — FileToLink</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        .player-wrapper {
+            width: 100%;
+            background: #000;
+            position: relative;
+        }
+        video, audio {
+            width: 100%;
+            max-height: 500px;
+            display: block;
+        }
+        .info {
+            padding: 24px;
+        }
+        .file-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+        .file-meta {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .footer a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="player-wrapper">
+            {% if file_url.split('.')[-1].split('?')[0] in ['mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a'] or 'audio' in file_url %}
+            <audio controls autoplay>
+                <source src="{{ file_url }}" type="audio/mpeg">
+                Your browser does not support audio playback.
+            </audio>
+            {% else %}
+            <video controls autoplay>
+                <source src="{{ file_url }}">
+                Your browser does not support video playback.
+            </video>
+            {% endif %}
+        </div>
+        <div class="info">
+            <div class="file-name">{{ file_name }}</div>
+            <div class="file-meta">Size: {{ file_size }}</div>
+            <div class="btn-group">
+                <a href="{{ file_url }}" class="btn btn-download" download>📥 Download File</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        Powered by <a href="https://t.me/pikachufrombd">@pikachufrombd</a> — FileToLink v3.0
+    </div>
+</body>
+</html>

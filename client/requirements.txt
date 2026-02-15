@@ -1,0 +1,8 @@
+pyrofork
+tgcrypto
+motor
+dnspython
+shortzy
+humanize
+pytz
+python-dotenv
