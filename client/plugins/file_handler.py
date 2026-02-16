@@ -1,5 +1,6 @@
 # Don't Remove Credit @pikachufrombd
 
+import mimetypes
 import humanize
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -8,8 +9,18 @@ from database.db import db
 from texts import Text
 
 
-def get_media_from_message(message):
-    """Extract media object from a message."""
+# Mime type mapping for media types that Pyrogram doesn't always set
+MEDIA_MIME_MAP = {
+    "photo": "image/jpeg",
+    "sticker": "image/webp",
+    "voice": "audio/ogg",
+    "video_note": "video/mp4",
+    "animation": "video/mp4",
+}
+
+
+def get_media_info(message):
+    """Extract media object and type from a message."""
     media_types = (
         "document", "video", "audio", "animation",
         "voice", "video_note", "photo", "sticker",
@@ -17,8 +28,49 @@ def get_media_from_message(message):
     for attr in media_types:
         media = getattr(message, attr, None)
         if media:
-            return media
-    return None
+            return media, attr
+    return None, None
+
+
+def detect_mime_type(media, media_type, file_name):
+    """Auto-detect the correct mime type."""
+    # 1. Check if it's a known media type with fixed mime
+    if media_type in MEDIA_MIME_MAP:
+        return MEDIA_MIME_MAP[media_type]
+
+    # 2. Use Pyrogram's mime_type if available and not generic
+    pyrogram_mime = getattr(media, 'mime_type', None)
+    if pyrogram_mime and pyrogram_mime != 'application/octet-stream':
+        return pyrogram_mime
+
+    # 3. Guess from file name extension
+    if file_name:
+        guessed = mimetypes.guess_type(file_name)[0]
+        if guessed:
+            return guessed
+
+    # 4. Fallback
+    return pyrogram_mime or 'application/octet-stream'
+
+
+def detect_file_name(media, media_type, message_id):
+    """Auto-detect a proper file name with correct extension."""
+    name = getattr(media, 'file_name', None)
+    if name:
+        return name
+
+    # Build name from media type
+    ext_map = {
+        "photo": "jpg",
+        "sticker": "webp",
+        "voice": "ogg",
+        "video_note": "mp4",
+        "animation": "gif",
+        "video": "mp4",
+        "audio": "mp3",
+    }
+    ext = ext_map.get(media_type, "bin")
+    return f"{media_type}_{message_id}.{ext}"
 
 
 async def get_shortlink(link):
@@ -42,24 +94,19 @@ async def get_shortlink(link):
 )
 async def file_handler(client, message):
     """Handle incoming files — copy to log channel, save to DB, generate links."""
-    media = get_media_from_message(message)
+    media, media_type = get_media_info(message)
     if not media:
         return
 
     user_id = message.from_user.id
     username = message.from_user.mention
 
-    # Get file info
-    file_name = getattr(media, 'file_name', None) or f"file_{message.id}"
+    # Auto-detect file info
+    file_name = detect_file_name(media, media_type, message.id)
     file_size = getattr(media, 'file_size', 0)
-    mime_type = getattr(media, 'mime_type', 'application/octet-stream')
+    mime_type = detect_mime_type(media, media_type, file_name)
     file_unique_id = media.file_unique_id
     file_id = media.file_id
-
-    # For photos, set a proper name
-    if message.photo:
-        file_name = f"photo_{message.id}.jpg"
-        mime_type = "image/jpeg"
 
     # Copy file to log channel (no forward tag, like original)
     log_msg = await client.send_cached_media(
@@ -136,4 +183,3 @@ async def file_handler(client, message):
             disable_web_page_preview=True,
             parse_mode=enums.ParseMode.HTML
         )
-

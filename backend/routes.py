@@ -23,6 +23,30 @@ def set_streamer(s):
     streamer = s
 
 
+# ─── Dangerous tags/patterns to strip from user HTML ───
+DANGEROUS_PATTERNS = [
+    re.compile(r'<\s*script[^>]*>.*?</\s*script\s*>', re.IGNORECASE | re.DOTALL),
+    re.compile(r'<\s*iframe[^>]*>.*?</\s*iframe\s*>', re.IGNORECASE | re.DOTALL),
+    re.compile(r'<\s*object[^>]*>.*?</\s*object\s*>', re.IGNORECASE | re.DOTALL),
+    re.compile(r'<\s*embed[^>]*/?>', re.IGNORECASE),
+    re.compile(r'<\s*form[^>]*>.*?</\s*form\s*>', re.IGNORECASE | re.DOTALL),
+    re.compile(r'\bon\w+\s*=\s*["\'][^"\']*["\']', re.IGNORECASE),  # onclick, onerror etc
+    re.compile(r'\bon\w+\s*=\s*\S+', re.IGNORECASE),  # unquoted event handlers
+    re.compile(r'javascript\s*:', re.IGNORECASE),
+]
+
+# Allow: <style>, <link>, inline CSS, images, divs, spans, semantic HTML
+# Block: <script>, <iframe>, <object>, <embed>, <form>, JS event handlers
+
+
+def sanitize_html(raw_html):
+    """Remove dangerous elements but keep CSS, layout, and static content."""
+    result = raw_html
+    for pattern in DANGEROUS_PATTERNS:
+        result = pattern.sub('', result)
+    return result
+
+
 @routes.get("/", allow_head=True)
 async def root_handler(request):
     return web.json_response({
@@ -34,7 +58,7 @@ async def root_handler(request):
 
 @routes.get(r"/watch/{path:\S+}", allow_head=True)
 async def watch_handler(request: web.Request):
-    """Render the stream/player page."""
+    """Render the stream/player page or serve HTML files as static pages."""
     try:
         path = request.match_info["path"]
         secure_hash, message_id = parse_path(path, request)
@@ -42,7 +66,6 @@ async def watch_handler(request: web.Request):
         # Verify hash from DB
         file_record = await db.get_file_by_hash(secure_hash, message_id)
         if not file_record:
-            # Fallback: verify from Telegram message directly
             file_data = await streamer.get_file_properties(message_id)
             if file_data.unique_id[:6] != secure_hash:
                 raise InvalidHash
@@ -52,21 +75,36 @@ async def watch_handler(request: web.Request):
         if file_data.unique_id[:6] != secure_hash:
             raise InvalidHash
 
-        # Build download URL using the actual request URL (not config)
-        # This auto-adapts to whatever domain/IP the user is accessing from
+        # Build download URL
         scheme = request.headers.get("X-Forwarded-Proto", request.scheme)
         host = request.headers.get("X-Forwarded-Host", request.host)
         base_url = f"{scheme}://{host}/"
-        src = urllib.parse.urljoin(
-            base_url,
-            f"dl/{secure_hash}{message_id}"
-        )
+        src = urllib.parse.urljoin(base_url, f"dl/{secure_hash}{message_id}")
 
-        # Determine template
-        tag = (file_data.mime_type or "").split("/")[0].strip()
+        # Get mime/file info
+        mime_type = file_data.mime_type or ""
+        file_name = file_data.file_name or "Unknown"
         file_size = humanbytes(file_data.file_size)
-        file_name = (file_data.file_name or "Unknown").replace("_", " ")
+        tag = mime_type.split("/")[0].strip() if mime_type else ""
 
+        # ── HTML files: serve as sanitized static page ──
+        if mime_type == "text/html" or file_name.lower().endswith(".html") or file_name.lower().endswith(".htm"):
+            raw_bytes = b""
+            chunk_size = 1024 * 1024
+            offset = 0
+            total = file_data.file_size
+            part_count = math.ceil(total / chunk_size)
+
+            async for chunk in streamer.yield_file(
+                file_data, 0, 0, total % chunk_size or chunk_size, part_count, chunk_size
+            ):
+                raw_bytes += chunk
+
+            raw_html = raw_bytes.decode("utf-8", errors="replace")
+            safe_html = sanitize_html(raw_html)
+            return web.Response(text=safe_html, content_type='text/html', charset='utf-8')
+
+        # ── Video / Audio: player template ──
         if tag in ["video", "audio"]:
             template_file = "templates/player.html"
         else:
@@ -76,7 +114,7 @@ async def watch_handler(request: web.Request):
             template = jinja2.Template(f.read())
 
         html = template.render(
-            file_name=file_name,
+            file_name=file_name.replace("_", " "),
             file_url=src,
             file_size=file_size,
         )
@@ -95,7 +133,7 @@ async def watch_handler(request: web.Request):
 
 @routes.get(r"/dl/{path:\S+}", allow_head=True)
 async def download_handler(request: web.Request):
-    """Handle direct file download/streaming."""
+    """Handle direct file download/streaming — always forces download."""
     try:
         path = request.match_info["path"]
         secure_hash, message_id = parse_path(path, request)
@@ -120,7 +158,6 @@ def parse_path(path, request):
         secure_hash = match.group(1)
         message_id = int(match.group(2))
     else:
-        # Fallback: try to parse id from path and hash from query
         message_id = int(re.search(r"(\d+)(?:/\S+)?", path).group(1))
         secure_hash = request.rel_url.query.get("hash")
     return secure_hash, message_id
