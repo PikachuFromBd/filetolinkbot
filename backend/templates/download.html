@@ -7,7 +7,7 @@
     <title>{{ file_name }} — Download</title>
     <meta name="description" content="Download {{ file_name }} — Powered by FileToLink">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         *,
@@ -19,13 +19,14 @@
         }
 
         :root {
-            --bg-primary: #0a0a0f;
+            --bg-primary: #08080d;
             --bg-card: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.06);
+            --bg-nav: rgba(8, 8, 13, 0.85);
+            --border: rgba(255, 255, 255, 0.07);
             --text-primary: #f0f0f5;
-            --text-secondary: #8b8b9e;
+            --text-secondary: #7a7a8e;
             --accent: #6c5ce7;
-            --accent-glow: rgba(108, 92, 231, 0.3);
+            --accent-glow: rgba(108, 92, 231, 0.25);
             --gradient-1: linear-gradient(135deg, #6c5ce7, #a855f7);
             --radius: 20px;
         }
@@ -35,11 +36,6 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
             overflow-x: hidden;
         }
 
@@ -50,8 +46,8 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(ellipse at 30% 40%, rgba(108, 92, 231, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 60%, rgba(168, 85, 247, 0.07) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 30% 40%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
             animation: bgShift 20s ease-in-out infinite alternate;
             z-index: -1;
         }
@@ -69,24 +65,12 @@
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(24px);
+                transform: translateY(16px);
             }
 
             to {
                 opacity: 1;
                 transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
             }
         }
 
@@ -98,137 +82,212 @@
             }
 
             50% {
-                transform: translateY(-6px);
+                transform: translateY(-5px);
             }
         }
 
-        .container {
-            width: 100%;
-            max-width: 440px;
-            animation: fadeUp 0.6s ease-out;
+        /* ─── Navbar ─── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-nav);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 40px 32px;
-            text-align: center;
-            backdrop-filter: blur(40px);
-            box-shadow: 0 0 80px rgba(108, 92, 231, 0.05);
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
         }
 
-        .file-icon-wrapper {
-            width: 88px;
-            height: 88px;
-            margin: 0 auto 24px;
-            border-radius: 24px;
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             background: var(--gradient-1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 1rem;
             color: #fff;
-            box-shadow: 0 8px 32px var(--accent-glow);
+        }
+
+        .logo-text {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-text span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ─── Main Content ─── */
+        .main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 56px - 60px);
+            padding: 24px 16px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px 28px 32px;
+            text-align: center;
+            backdrop-filter: blur(30px);
+            animation: fadeUp 0.5s ease-out;
+        }
+
+        .file-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 22px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            box-shadow: 0 8px 28px var(--accent-glow);
             animation: iconFloat 3s ease-in-out infinite;
         }
 
         .file-name {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--text-primary);
             word-break: break-word;
             line-height: 1.5;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .file-size {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
-        .file-size span {
+        .file-size .badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: rgba(108, 92, 231, 0.1);
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: 500;
         }
 
+        .file-size .badge i {
+            font-size: 0.9rem;
+        }
+
         .btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            padding: 14px 24px;
-            border-radius: 14px;
+            padding: 13px 24px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.25s ease;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
             cursor: pointer;
             border: none;
+        }
+
+        .btn i {
+            font-size: 1.1rem;
         }
 
         .btn-primary {
             background: var(--gradient-1);
             color: #fff;
-            box-shadow: 0 4px 20px var(--accent-glow);
-            margin-bottom: 12px;
+            box-shadow: 0 4px 18px var(--accent-glow);
+            margin-bottom: 10px;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 35px var(--accent-glow);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 28px var(--accent-glow);
         }
 
-        .btn-primary:active {
-            transform: translateY(0);
-            animation: pulse 0.3s ease;
-        }
-
-        .btn-secondary {
+        .btn-ghost {
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
 
-        .btn-secondary:hover {
+        .btn-ghost:hover {
             background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
         }
 
         .divider {
             height: 1px;
             background: var(--border);
-            margin: 24px 0;
+            margin: 22px 0;
         }
 
         .info-row {
             display: flex;
             justify-content: center;
-            gap: 24px;
-            font-size: 0.78rem;
+            gap: 20px;
+            font-size: 0.75rem;
             color: var(--text-secondary);
         }
 
         .info-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .info-item i {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
+        /* ─── Footer ─── */
         .footer {
             text-align: center;
-            padding: 20px;
+            padding: 16px;
             font-size: 0.72rem;
             color: var(--text-secondary);
             opacity: 0.5;
@@ -237,39 +296,61 @@
         .footer a {
             color: var(--accent);
             text-decoration: none;
-            transition: opacity 0.2s;
         }
 
-        .footer a:hover {
-            opacity: 0.8;
-        }
-
+        /* ─── Mobile ─── */
         @media (max-width: 480px) {
+            .navbar {
+                padding: 0 14px;
+                height: 50px;
+            }
+
+            .logo-text {
+                font-size: 0.9rem;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
             .card {
-                padding: 32px 20px;
+                padding: 32px 20px 24px;
             }
 
             .file-icon-wrapper {
-                width: 72px;
-                height: 72px;
-                border-radius: 20px;
-                font-size: 1.8rem;
+                width: 68px;
+                height: 68px;
+                font-size: 1.7rem;
+                border-radius: 18px;
             }
 
             .file-name {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
 
             .btn {
-                padding: 13px 20px;
-                font-size: 0.9rem;
+                padding: 12px 20px;
+                font-size: 0.85rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="https://t.me/PikaFileToLinkBot" class="logo">
+            <div class="logo-icon"><i class="ri-link"></i></div>
+            <div class="logo-text"><span>FileToLink</span>Bot</div>
+        </a>
+        <a href="https://t.me/PikaFileToLinkBot" class="nav-btn" target="_blank">
+            <i class="ri-telegram-line"></i> Open Bot
+        </a>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
         <div class="card">
             <div class="file-icon-wrapper">
                 <i class="ri-file-3-line"></i>
@@ -277,14 +358,14 @@
 
             <div class="file-name">{{ file_name }}</div>
             <div class="file-size">
-                <span><i class="ri-hard-drive-3-line"></i> {{ file_size }}</span>
+                <span class="badge"><i class="ri-hard-drive-3-line"></i> {{ file_size }}</span>
             </div>
 
             <a href="{{ file_url }}" class="btn btn-primary" download>
                 <i class="ri-download-2-line"></i> Download Now
             </a>
 
-            <a href="https://t.me/PikaFileToLinkBot" class="btn btn-secondary" target="_blank">
+            <a href="https://t.me/PikaFileToLinkBot" class="btn btn-ghost" target="_blank">
                 <i class="ri-telegram-line"></i> Get More Files via Bot
             </a>
 
@@ -295,9 +376,10 @@
                 <div class="info-item"><i class="ri-infinity-line"></i> No Expiry</div>
             </div>
         </div>
-        <div class="footer">
-            By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
-        </div>
+    </main>
+
+    <div class="footer">
+        By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
     </div>
 </body>
 

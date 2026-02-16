@@ -7,7 +7,7 @@
     <title>{{ file_name }} — FileToLink</title>
     <meta name="description" content="Stream {{ file_name }} — Powered by FileToLink">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
@@ -20,15 +20,16 @@
         }
 
         :root {
-            --bg-primary: #0a0a0f;
+            --bg-primary: #08080d;
             --bg-card: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.06);
+            --bg-nav: rgba(8, 8, 13, 0.85);
+            --border: rgba(255, 255, 255, 0.07);
             --text-primary: #f0f0f5;
-            --text-secondary: #8b8b9e;
+            --text-secondary: #7a7a8e;
             --accent: #6c5ce7;
-            --accent-glow: rgba(108, 92, 231, 0.3);
+            --accent-light: #a855f7;
+            --accent-glow: rgba(108, 92, 231, 0.25);
             --gradient-1: linear-gradient(135deg, #6c5ce7, #a855f7);
-            --gradient-2: linear-gradient(135deg, #0ea5e9, #6c5ce7);
             --radius: 16px;
         }
 
@@ -37,11 +38,6 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
             overflow-x: hidden;
         }
 
@@ -52,27 +48,26 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(ellipse at 20% 50%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+            background: radial-gradient(ellipse at 20% 50%, rgba(108, 92, 231, 0.07) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
             animation: bgShift 20s ease-in-out infinite alternate;
             z-index: -1;
         }
 
         @keyframes bgShift {
             0% {
-                transform: translate(0, 0) rotate(0deg);
+                transform: translate(0, 0);
             }
 
             100% {
-                transform: translate(-5%, -5%) rotate(3deg);
+                transform: translate(-4%, -4%);
             }
         }
 
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(16px);
             }
 
             to {
@@ -81,77 +76,138 @@
             }
         }
 
-        .container {
-            width: 100%;
-            max-width: 860px;
-            animation: fadeUp 0.6s ease-out;
+        /* ─── Navbar ─── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-nav);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .logo-text {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .logo-text span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ─── Main Content ─── */
+        .main {
+            max-width: 900px;
+            margin: 24px auto;
+            padding: 0 16px;
+            animation: fadeUp 0.5s ease-out;
+        }
+
+        /* ─── Player Card ─── */
         .player-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
-            backdrop-filter: blur(40px);
-            box-shadow: 0 0 80px rgba(108, 92, 231, 0.05);
+            backdrop-filter: blur(30px);
         }
 
         .player-wrapper {
             width: 100%;
             background: #000;
-            position: relative;
-            aspect-ratio: 16/9;
         }
 
         .player-wrapper video,
         .player-wrapper audio {
             width: 100%;
-            height: 100%;
             display: block;
         }
 
         .player-wrapper.audio-mode {
-            aspect-ratio: unset;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 48px 24px;
+            background: linear-gradient(135deg, #12121f, #1a1a2e);
+            text-align: center;
+        }
+
+        /* Plyr overrides */
+        .plyr {
+            --plyr-color-main: var(--accent);
         }
 
         .plyr--video {
             border-radius: 0;
         }
 
-        .plyr--full-ui input[type=range] {
-            color: var(--accent);
-        }
-
         .plyr__control--overlaid {
-            background: var(--gradient-1);
+            background: var(--gradient-1) !important;
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
-        .plyr__control--overlaid:hover {
-            background: var(--accent);
-        }
-
+        /* ─── File Info ─── */
         .file-info {
-            padding: 24px;
-        }
-
-        .file-header {
+            padding: 20px 24px;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 16px;
-            margin-bottom: 20px;
         }
 
         .file-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             background: var(--gradient-1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             flex-shrink: 0;
             color: #fff;
         }
@@ -162,33 +218,39 @@
         }
 
         .file-name {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-primary);
-            word-break: break-word;
-            line-height: 1.4;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .file-meta {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 6px;
-            font-size: 0.85rem;
+            gap: 8px;
+            margin-top: 3px;
+            font-size: 0.78rem;
             color: var(--text-secondary);
         }
 
-        .meta-dot {
+        .file-meta i {
+            font-size: 0.85rem;
+        }
+
+        .meta-sep {
             width: 3px;
             height: 3px;
             border-radius: 50%;
             background: var(--text-secondary);
         }
 
+        /* ─── Action Buttons ─── */
         .actions {
+            padding: 0 24px 20px;
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
         }
 
         .btn {
@@ -196,87 +258,119 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 11px 22px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.25s ease;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
             cursor: pointer;
             border: none;
             flex: 1;
-            min-width: 140px;
+        }
+
+        .btn i {
+            font-size: 1.1rem;
         }
 
         .btn-primary {
             background: var(--gradient-1);
             color: #fff;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            box-shadow: 0 4px 16px var(--accent-glow);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px var(--accent-glow);
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.08);
         }
 
+        /* ─── Footer ─── */
         .footer {
             text-align: center;
-            padding: 20px;
-            font-size: 0.75rem;
+            padding: 24px 16px;
+            font-size: 0.72rem;
             color: var(--text-secondary);
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .footer a {
             color: var(--accent);
             text-decoration: none;
-            transition: opacity 0.2s;
         }
 
-        .footer a:hover {
-            opacity: 0.8;
-        }
-
+        /* ─── Mobile ─── */
         @media (max-width: 640px) {
-            body {
-                padding: 10px;
+            .navbar {
+                padding: 0 14px;
+                height: 50px;
+            }
+
+            .logo-text {
+                font-size: 0.9rem;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+
+            .main {
+                margin: 14px auto;
+                padding: 0 10px;
             }
 
             .file-info {
                 padding: 16px;
-            }
-
-            .file-name {
-                font-size: 1rem;
-            }
-
-            .btn {
-                padding: 11px 18px;
-                font-size: 0.85rem;
+                gap: 12px;
             }
 
             .file-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.1rem;
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .file-name {
+                font-size: 0.88rem;
+            }
+
+            .actions {
+                padding: 0 16px 16px;
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.82rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="https://t.me/PikaFileToLinkBot" class="logo">
+            <div class="logo-icon"><i class="ri-link"></i></div>
+            <div class="logo-text"><span>FileToLink</span>Bot</div>
+        </a>
+        <a href="https://t.me/PikaFileToLinkBot" class="nav-btn" target="_blank">
+            <i class="ri-telegram-line"></i> Open Bot
+        </a>
+    </nav>
+
+    <!-- Main -->
+    <main class="main">
         <div class="player-card">
             <div class="player-wrapper" id="playerWrapper">
                 {% if file_url.split('.')[-1].split('?')[0] in ['mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a'] or 'audio' in
@@ -292,31 +386,32 @@
                 </video>
                 {% endif %}
             </div>
+
             <div class="file-info">
-                <div class="file-header">
-                    <div class="file-icon"><i class="ri-play-circle-fill"></i></div>
-                    <div class="file-details">
-                        <div class="file-name">{{ file_name }}</div>
-                        <div class="file-meta">
-                            <span><i class="ri-hard-drive-3-line"></i> {{ file_size }}</span>
-                            <span class="meta-dot"></span>
-                            <span>FileToLink</span>
-                        </div>
+                <div class="file-icon"><i class="ri-play-circle-fill"></i></div>
+                <div class="file-details">
+                    <div class="file-name">{{ file_name }}</div>
+                    <div class="file-meta">
+                        <i class="ri-hard-drive-3-line"></i> {{ file_size }}
+                        <span class="meta-sep"></span>
+                        FileToLink
                     </div>
                 </div>
-                <div class="actions">
-                    <a href="{{ file_url }}" class="btn btn-primary" download>
-                        <i class="ri-download-2-line"></i> Download
-                    </a>
-                    <a href="https://t.me/PikaFileToLinkBot" class="btn btn-secondary" target="_blank">
-                        <i class="ri-telegram-line"></i> Open Bot
-                    </a>
-                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{{ file_url }}" class="btn btn-primary" download>
+                    <i class="ri-download-2-line"></i> Download
+                </a>
+                <a href="https://t.me/PikaFileToLinkBot" class="btn btn-ghost" target="_blank">
+                    <i class="ri-telegram-line"></i> Open Bot
+                </a>
             </div>
         </div>
-        <div class="footer">
-            By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
-        </div>
+    </main>
+
+    <div class="footer">
+        By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -326,8 +421,8 @@
             settings: ['speed'],
             speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
         });
-        const audioEl = document.querySelector('audio');
-        if (audioEl) document.getElementById('playerWrapper').classList.add('audio-mode');
+        if (document.querySelector('audio'))
+            document.getElementById('playerWrapper').classList.add('audio-mode');
     </script>
 </body>
 
