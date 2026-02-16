@@ -27,3 +27,7 @@ BACKEND_URL = environ.get('BACKEND_URL', 'http://localhost:8080').rstrip('/')
 SHORTLINK = environ.get('SHORTLINK', 'False').lower() in ('true', '1', 'yes')
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'api.shareus.io')
 SHORTLINK_API = environ.get('SHORTLINK_API', '')
+
+# Force Join
+FORCE_JOIN_CHANNEL = environ.get('FORCE_JOIN_CHANNEL', 'Team_SixtyNine')  # channel username without @
+FORCE_JOIN_TIMEOUT = int(environ.get('FORCE_JOIN_TIMEOUT', '300'))  # seconds (5 min)
