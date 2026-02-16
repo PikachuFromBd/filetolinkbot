@@ -91,7 +91,9 @@ async def file_handler(client, message):
         text=Text.LOG_FILE_TXT.format(
             user_id=user_id,
             username=username,
-            file_name=file_name
+            file_name=file_name,
+            stream=stream_url,
+            download=download_url
         ),
         quote=True,
         disable_web_page_preview=True,

@@ -1,46 +1,44 @@
 # Don't Remove Credit @pikachufrombd
 
 class Text:
-    START_TXT = """👋 <b>ʜᴇʏ {}!</b>
+    START_TXT = """<b>👋 𝗛𝗲𝗹𝗹𝗼 {}!</b>
 
-⚡ <b>ɪ'ᴍ <a href='https://t.me/{}'>{}</a></b>
-<b>ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ʙᴏᴛ!</b>
+<b>✨ 𝗜'𝗺 <a href='https://t.me/{}'>{}</a>, 𝗮𝗻 𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗙𝗶𝗹𝗲 𝘁𝗼 𝗟𝗶𝗻𝗸 𝗕𝗼𝘁! ✨</b>
 
-━━━━━━━━━━━━━━━━━━
-📤 Send me any file, video, or document
-🖥 Get instant stream & download links
-🔗 Links never expire — share anywhere
-📂 Use /myfiles to see your uploads
-━━━━━━━━━━━━━━━━━━
+🚀 <i>Send me any file and I'll generate instant stream & download links!</i>
 
-✨ <b>Send me any media to get started!</b>"""
+🔹 <b>𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿:</b> <a href='https://t.me/pikachufrombd'>@pikachufrombd</a>
 
-    LOG_TEXT = """🚀 <b>#NewUser</b>
+🎭 <b>Send me any media & witness the magic unfold! ✨</b>"""
+
+    LOG_TEXT = """<b>🚀 #𝗡𝗲𝘄𝗨𝘀𝗲𝗿</b>
 
 🆔 <b>ID :</b> <code>{}</code>
 👤 <b>Name :</b> <i>{}</i>"""
 
-    RESTART_TXT = """🔄 <b>Bot Restarted!</b>
+    RESTART_TXT = """<b>🔄 𝗕𝗼𝘁 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗲𝗱! 🔄</b>
 
 📅 <b>Date :</b> <code>{}</code>
 ⏰ <b>Time :</b> <code>{}</code>
 🌍 <b>Timezone :</b> <code>Asia/Dhaka</code>
 
-🛠️ <b>Build :</b> <code>v3.0 [ Client ]</code>"""
+🛠️ <b>Build Status:</b> <code>🚀 v3.0.0 [ Client ]</code>"""
 
-    LINK_TXT = """✅ <b>ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ!</b>
+    LINK_TXT = """<i><u>𝗬𝗼𝘂𝗿 𝗟𝗶𝗻𝗸 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 !</u></i>
 
-━━━━━━━━━━━━━━━━━━
-📂 <b>ɴᴀᴍᴇ :</b> <code>{file_name}</code>
-📦 <b>ꜱɪᴢᴇ :</b> <code>{file_size}</code>
-━━━━━━━━━━━━━━━━━━
+<b>📂 Fɪʟᴇ ɴᴀᴍᴇ :</b> <i>{file_name}</i>
 
-🖥 <b>ꜱᴛʀᴇᴀᴍ :</b> {stream}
-📥 <b>ᴅᴏᴡɴʟᴏᴀᴅ :</b> {download}
+<b>📦 Fɪʟᴇ ꜱɪᴢᴇ :</b> <i>{file_size}</i>
 
-⚠️ <i>ʟɪɴᴋ ᴡᴏɴ'ᴛ ᴇxᴘɪʀᴇ ᴛɪʟʟ ɪ ᴅᴇʟᴇᴛᴇ</i>"""
+<b>📥 Dᴏᴡɴʟᴏᴀᴅ :</b> <i>{download}</i>
 
-    LOG_FILE_TXT = """•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ꜰᴏʀ ɪᴅ #{user_id}
-•• ᴜꜱᴇʀɴᴀᴍᴇ : {username}
+<b>🖥 Wᴀᴛᴄʜ :</b> <i>{stream}</i>
 
-•• ꜰɪʟᴇ ɴᴀᴍᴇ : {file_name}"""
+<b>🚸 Nᴏᴛᴇ : ʟɪɴᴋ ᴡᴏɴ'ᴛ ᴇxᴘɪʀᴇ ᴛɪʟʟ ɪ ᴅᴇʟᴇᴛᴇ</b>"""
+
+    LOG_FILE_TXT = """<b>📎 ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ</b>
+
+👤 <b>User :</b> #{user_id} — {username}
+📂 <b>File :</b> <code>{file_name}</code>
+🖥 <b>Stream :</b> {stream}
+📥 <b>Download :</b> {download}"""
