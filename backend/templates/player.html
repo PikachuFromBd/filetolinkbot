@@ -1,398 +1,173 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>{{ file_name }} — FileToLink</title>
-    <meta name="description" content="Stream {{ file_name }} — Powered by FileToLink" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
-
-    <!-- Video.js -->
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FileToLink | {{ file_name }}</title>
+    <meta name="description" content="Stream {{ file_name }} — FileToLink Bot">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet">
     <style>
-        *,
-        *::before,
-        *::after {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         :root {
-            --bg-primary: #0a0a12;
-            --bg-secondary: #12121a;
-            --bg-glass: rgba(255, 255, 255, 0.03);
-            --bg-glass-hover: rgba(255, 255, 255, 0.06);
-            --bg-nav: rgba(15, 15, 25, 0.6);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --border-glass-light: rgba(255, 255, 255, 0.12);
-            --text-primary: #f5f5fa;
-            --text-secondary: #8b8b9e;
-            --text-muted: #5a5a6e;
+            --bg: #0a0a0f;
+            --bg2: #111118;
+            --card: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #f0f0f5;
+            --text2: #888899;
             --accent: #7c6df5;
-            --accent-secondary: #c084fc;
-            --accent-pink: #f472b6;
-            --accent-glow: rgba(124, 109, 245, 0.4);
-            --gradient-1: linear-gradient(135deg, #7c6df5 0%, #c084fc 50%, #f472b6 100%);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
-            --radius: 20px;
-            --radius-sm: 14px;
-            --radius-xs: 10px;
-        }
-
-        [data-theme="light"] {
-            --bg-primary: #f8f9fc;
-            --bg-secondary: #ffffff;
-            --bg-glass: rgba(255, 255, 255, 0.7);
-            --bg-glass-hover: rgba(255, 255, 255, 0.85);
-            --bg-nav: rgba(255, 255, 255, 0.8);
-            --border-glass: rgba(0, 0, 0, 0.06);
-            --border-glass-light: rgba(0, 0, 0, 0.1);
-            --text-primary: #1a1a2e;
-            --text-secondary: #5a5a7a;
-            --text-muted: #8a8aa0;
-            --accent-glow: rgba(124, 109, 245, 0.25);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --accent2: #c084fc;
+            --pink: #f472b6;
+            --grad: linear-gradient(135deg, #7c6df5, #c084fc, #f472b6);
+            --glow: rgba(124, 109, 245, 0.3);
         }
 
         body {
-            font-family: "Inter", system-ui, -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
+            font-family: 'Josefin Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             overflow-x: hidden;
-            transition: background 0.4s ease, color 0.4s ease;
         }
 
-        /* ─── Background Orbs ─── */
-        .bg-orbs {
+        /* ═══ NAVBAR ═══ */
+        nav {
             position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: -1;
-            filter: blur(80px);
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(124, 109, 245, 0.25) 0%, transparent 70%);
-            top: -10%;
-            left: -10%;
-        }
-
-        .orb-2 {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(192, 132, 252, 0.2) 0%, transparent 70%);
-            top: 50%;
-            right: -5%;
-            animation-delay: -7s;
-        }
-
-        .orb-3 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(244, 114, 182, 0.15) 0%, transparent 70%);
-            bottom: -5%;
-            left: 30%;
-            animation-delay: -14s;
-        }
-
-        [data-theme="light"] .bg-orbs {
-            opacity: 0.4;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            25% {
-                transform: translate(30px, -30px) scale(1.05);
-            }
-
-            50% {
-                transform: translate(-20px, 20px) scale(0.95);
-            }
-
-            75% {
-                transform: translate(20px, 10px) scale(1.02);
-            }
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% center;
-            }
-
-            100% {
-                background-position: 200% center;
-            }
-        }
-
-        /* ─── Navbar ─── */
-        .navbar {
-            position: sticky;
             top: 0;
-            z-index: 100;
-            background: var(--bg-nav);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border-bottom: 1px solid var(--border-glass);
-            padding: 0 24px;
-            height: 60px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 0 30px;
+            height: 65px;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
         }
 
-        .logo {
+        .nav-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
-            color: var(--text-primary);
+            color: var(--text);
         }
 
-        .logo-icon {
-            width: 36px;
-            height: 36px;
+        .nav-logo-icon {
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            background: var(--gradient-1);
+            background: var(--grad);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px;
             color: #fff;
-            box-shadow: 0 4px 16px rgba(124, 109, 245, 0.4);
+            box-shadow: 0 4px 15px var(--glow);
         }
 
-        .logo-icon .material-icons-round {
-            font-size: 20px;
-        }
-
-        .logo-text {
-            font-size: 1.05rem;
+        .nav-logo h3 {
+            font-size: 1.15rem;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
-        .logo-text span {
-            background: var(--gradient-1);
+        .nav-logo h3 span {
+            background: var(--grad);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .nav-actions {
+        .nav-links {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            gap: 6px;
         }
 
-        .theme-toggle {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-xs);
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .theme-toggle:hover {
-            border-color: var(--border-glass-light);
-            transform: translateY(-1px);
-        }
-
-        .theme-toggle .material-icons-round {
-            font-size: 18px;
-            color: var(--text-primary);
-            position: absolute;
-            transition: all 0.4s ease;
-        }
-
-        .theme-toggle .sun-icon {
-            opacity: 0;
-            transform: rotate(-90deg) scale(0.5);
-        }
-
-        .theme-toggle .moon-icon {
-            opacity: 1;
-            transform: rotate(0) scale(1);
-        }
-
-        [data-theme="light"] .theme-toggle .sun-icon {
-            opacity: 1;
-            transform: rotate(0) scale(1);
-        }
-
-        [data-theme="light"] .theme-toggle .moon-icon {
-            opacity: 0;
-            transform: rotate(90deg) scale(0.5);
-        }
-
-        .nav-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 18px;
-            border-radius: var(--radius-sm);
+        .nav-links a {
+            padding: 8px 18px;
+            border-radius: 10px;
             text-decoration: none;
+            color: var(--text2);
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 0.82rem;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            color: var(--text-primary);
-            border: 1px solid var(--border-glass);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
+            border: 1px solid transparent;
         }
 
-        .nav-btn:hover {
-            border-color: var(--border-glass-light);
-            transform: translateY(-1px);
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+            background: var(--card);
+            border-color: var(--card-border);
         }
 
-        .nav-btn .material-icons-round {
-            font-size: 18px;
+        /* ═══ MAIN CONTENT ═══ */
+        .content {
+            margin-top: 65px;
         }
 
-        /* ─── Main Content ─── */
-        .main {
-            max-width: 900px;
-            margin: 28px auto;
-            padding: 0 16px;
-            animation: fadeUp 0.6s ease;
-        }
-
-        /* ─── Player Card ─── */
-        .player-card {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius);
-            overflow: hidden;
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .player-card:hover {
-            box-shadow: var(--shadow-lg), 0 0 40px rgba(124, 109, 245, 0.08);
-            border-color: var(--border-glass-light);
-        }
-
-        /* ─── Video.js Container ─── */
-        .player-wrapper {
-            width: 100%;
+        /* ═══ PLAYER SECTION ═══ */
+        .player-section {
             background: #000;
             position: relative;
         }
 
-        /* Video.js Custom Theme */
+        /* Video.js */
         .video-js {
             width: 100% !important;
-            font-family: "Inter", sans-serif;
+            font-family: 'Josefin Sans', sans-serif;
         }
 
-        /* Let Video.js calculate height from video metadata */
-        .video-js .vjs-tech {
-            position: relative !important;
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* When video metadata is loaded, use absolute positioning */
-        .vjs-has-started .vjs-tech {
-            position: absolute !important;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Big play button */
         .video-js .vjs-big-play-button {
-            background: var(--gradient-1) !important;
+            background: var(--grad) !important;
             border: none !important;
             border-radius: 50% !important;
-            width: 64px !important;
-            height: 64px !important;
-            line-height: 64px !important;
-            font-size: 28px !important;
+            width: 70px !important;
+            height: 70px !important;
+            line-height: 70px !important;
+            font-size: 30px !important;
             top: 50% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
-            box-shadow: 0 8px 32px var(--accent-glow) !important;
-            transition: all 0.3s ease !important;
+            box-shadow: 0 8px 40px var(--glow) !important;
+            transition: all 0.3s !important;
         }
 
         .video-js .vjs-big-play-button:hover {
-            transform: translate(-50%, -50%) scale(1.1) !important;
-            box-shadow: 0 12px 48px var(--accent-glow) !important;
+            transform: translate(-50%, -50%) scale(1.15) !important;
+            box-shadow: 0 12px 60px var(--glow) !important;
         }
 
-        /* Control bar */
         .video-js .vjs-control-bar {
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%) !important;
-            height: 48px !important;
-            padding: 0 8px;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%) !important;
+            height: 50px !important;
         }
 
-        .video-js .vjs-control {
-            color: #fff !important;
-        }
-
-        /* Progress bar */
         .video-js .vjs-progress-control {
             position: absolute !important;
-            top: -14px;
+            top: -12px;
             left: 0;
             right: 0;
             width: 100% !important;
-            height: 20px !important;
+            height: 18px !important;
         }
 
         .video-js .vjs-progress-holder {
             height: 4px !important;
             margin: 0 !important;
             border-radius: 4px;
-            transition: height 0.15s ease;
         }
 
         .video-js .vjs-progress-control:hover .vjs-progress-holder {
@@ -400,39 +175,28 @@
         }
 
         .video-js .vjs-play-progress {
-            background: var(--gradient-1) !important;
+            background: var(--grad) !important;
             border-radius: 4px;
         }
 
         .video-js .vjs-play-progress::before {
             content: "" !important;
             position: absolute;
-            right: -6px;
+            right: -7px;
             top: 50%;
             transform: translateY(-50%);
             width: 14px;
             height: 14px;
             background: #fff;
             border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-glow);
-            transition: transform 0.15s ease;
-        }
-
-        .video-js .vjs-progress-control:hover .vjs-play-progress::before {
-            transform: translateY(-50%) scale(1.2);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         .video-js .vjs-load-progress {
-            background: rgba(255, 255, 255, 0.15) !important;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.12) !important;
         }
 
         .video-js .vjs-load-progress div {
-            background: rgba(255, 255, 255, 0.25) !important;
-        }
-
-        /* Volume */
-        .video-js .vjs-volume-bar {
             background: rgba(255, 255, 255, 0.2) !important;
         }
 
@@ -440,374 +204,373 @@
             background: var(--accent) !important;
         }
 
-        /* Time display */
         .video-js .vjs-time-control {
-            font-size: 0.78rem !important;
+            font-size: 0.8rem !important;
             font-weight: 500;
-            padding: 0 4px !important;
         }
 
-        /* Tooltips */
-        .video-js .vjs-time-tooltip {
-            background: var(--accent) !important;
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 0.72rem;
-        }
-
-        .video-js .vjs-mouse-display .vjs-time-tooltip {
-            background: var(--accent) !important;
-        }
-
-        /* Menu */
         .video-js .vjs-menu-content {
-            background: rgba(20, 20, 30, 0.95) !important;
+            background: rgba(15, 15, 20, 0.95) !important;
+            border-radius: 10px !important;
+            border: 1px solid var(--card-border);
             backdrop-filter: blur(20px);
-            border-radius: 8px !important;
-            border: 1px solid var(--border-glass);
         }
 
         .video-js .vjs-menu li.vjs-selected {
             background: var(--accent) !important;
-            color: #fff !important;
         }
 
         .video-js .vjs-menu li:hover {
             background: rgba(124, 109, 245, 0.3) !important;
         }
 
-        /* Poster */
-        .video-js .vjs-poster {
-            background-size: contain;
-        }
-
         /* Audio Mode */
-        .player-wrapper.audio-mode {
-            padding: 48px 24px;
-            background: linear-gradient(135deg, rgba(20, 20, 35, 0.9), rgba(30, 20, 50, 0.9));
-            text-align: center;
+        .audio-section {
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #0f0f1a, #1a1025);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 24px;
         }
 
-        .audio-artwork {
+        .audio-icon-wrap {
             width: 120px;
             height: 120px;
-            border-radius: 24px;
-            background: var(--gradient-1);
+            border-radius: 28px;
+            background: var(--grad);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 12px 40px var(--accent-glow);
-        }
-
-        .audio-artwork .material-icons-round {
             font-size: 48px;
             color: #fff;
+            box-shadow: 0 16px 50px var(--glow);
+            animation: pulse 3s ease-in-out infinite;
         }
 
-        .audio-player-wrap {
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 16px 50px var(--glow);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 20px 70px var(--glow);
+                transform: scale(1.03);
+            }
+        }
+
+        .audio-section audio {
             width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
         }
 
-        .audio-player-wrap audio {
-            width: 100%;
+        /* ═══ FILE INFO BAR ═══ */
+        .file-bar {
+            background: var(--bg2);
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--card-border);
         }
 
-        /* ─── File Info ─── */
-        .file-info {
-            padding: 20px 24px;
+        .file-bar-inner {
+            max-width: 1000px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 14px;
-            border-top: 1px solid var(--border-glass);
+            gap: 16px;
         }
 
         .file-icon {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 14px;
-            background: var(--gradient-1);
+            background: var(--grad);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            font-size: 22px;
             color: #fff;
-            box-shadow: 0 6px 20px rgba(124, 109, 245, 0.3);
+            flex-shrink: 0;
+            box-shadow: 0 6px 20px var(--glow);
         }
 
-        .file-icon .material-icons-round {
-            font-size: 24px;
-        }
-
-        .file-details {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .file-name {
-            font-size: 0.95rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .file-info h4 {
+            font-size: 0.75rem;
+            color: var(--text2);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 4px;
         }
 
-        .file-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .file-meta .material-icons-round {
-            font-size: 14px;
-            color: var(--accent);
-        }
-
-        .meta-sep {
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0.5;
-        }
-
-        .meta-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 7px;
-            border-radius: 5px;
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            font-size: 0.68rem;
+        .file-info p {
+            font-size: 1rem;
             font-weight: 600;
-            color: var(--accent);
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .file-size-badge {
+            margin-left: auto;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent2);
+            white-space: nowrap;
+        }
+
+        /* ═══ EXTERNAL PLAYER BUTTONS ═══ */
+        .ext-players {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .ext-players h3 {
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 1.5px;
+            color: var(--text2);
+            margin-bottom: 16px;
+            text-align: center;
         }
 
-        .meta-badge .material-icons-round {
-            font-size: 11px;
+        .player-btns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
         }
 
-        /* ─── Action Buttons ─── */
-        .actions {
-            padding: 0 24px 24px;
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-download {
-            position: relative;
-            height: 52px;
-            cursor: pointer;
+        .player-btn {
             display: flex;
             align-items: center;
-            border: 1px solid var(--border-glass);
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            flex: 1;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
             text-decoration: none;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
-        .btn-download__text {
-            transform: translateX(24px);
-            color: var(--text-primary);
+        .player-btn:hover {
+            border-color: var(--accent);
+            background: rgba(124, 109, 245, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(124, 109, 245, 0.15);
+        }
+
+        .player-btn img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+        }
+
+        .download-btn {
+            background: var(--grad) !important;
+            border: none !important;
+            color: #fff !important;
+            font-size: 0.9rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 12px 32px var(--glow) !important;
+        }
+
+        /* ═══ SECTIONS ═══ */
+        .sections {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .section h1 span {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section p {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+            letter-spacing: 0.3px;
+        }
+
+        .section-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .section-link {
+            padding: 12px 28px;
+            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
-            white-space: nowrap;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
-        .btn-download__icon {
-            position: absolute;
-            right: 4px;
-            height: calc(100% - 8px);
-            width: 46px;
-            background: var(--gradient-1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-xs);
-            box-shadow: 0 4px 12px var(--accent-glow);
-            transition: all 0.3s ease;
+        .section-link:hover {
+            border-color: var(--accent);
+            background: rgba(124, 109, 245, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 109, 245, 0.15);
         }
 
-        .btn-download__icon .material-icons-round {
-            font-size: 22px;
+        .section-link.primary {
+            background: var(--grad);
+            border-color: transparent;
             color: #fff;
         }
 
-        .btn-download:hover {
-            border-color: var(--accent);
-            box-shadow: var(--shadow-md), 0 0 24px var(--accent-glow);
-            transform: translateY(-2px);
+        .section-link.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px var(--glow);
         }
 
-        .btn-download:hover .btn-download__text {
-            color: transparent;
+        /* ═══ FOOTER ═══ */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--card-border);
         }
 
-        .btn-download:hover .btn-download__icon {
-            width: calc(100% - 8px);
-        }
-
-        .btn-ghost {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px 24px;
-            height: 48px;
-            border-radius: var(--radius-sm);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            color: var(--text-primary);
-            border: 1px solid var(--border-glass);
-            flex: 1;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-
-        .btn-ghost:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md), 0 0 16px rgba(124, 109, 245, 0.15);
-        }
-
-        .btn-ghost .material-icons-round {
-            font-size: 18px;
-        }
-
-        /* ─── Stats Bar ─── */
-        .stats-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 28px;
-            padding: 18px;
-            margin-top: 20px;
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-sm);
-            backdrop-filter: blur(20px);
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .stat-value {
-            font-size: 1rem;
+        footer .cta {
+            font-size: 1.4rem;
             font-weight: 700;
-            background: var(--gradient-1);
+            margin-bottom: 20px;
+        }
+
+        footer .cta span {
+            background: var(--grad);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        footer .disclaimer {
+            font-size: 0.8rem;
+            color: var(--text2);
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto 24px;
         }
 
-        .stat-divider {
-            width: 1px;
-            height: 28px;
-            background: var(--border-glass);
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 16px;
         }
 
-        /* ─── Footer ─── */
-        .footer {
-            text-align: center;
-            padding: 28px 16px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer a:hover {
-            color: var(--accent-secondary);
-        }
-
-        .footer-brand {
+        .footer-icons a {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .footer-brand .material-icons-round {
-            font-size: 13px;
             color: var(--accent);
+            font-size: 18px;
+            text-decoration: none;
+            transition: all 0.3s;
         }
 
-        /* ═══════════════════════════════════════
-           MOBILE RESPONSIVE
-           ═══════════════════════════════════════ */
-        @media (max-width: 640px) {
-            .navbar {
-                padding: 0 14px;
-                height: 52px;
+        .footer-icons a:hover {
+            background: var(--accent);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            font-size: 0.78rem;
+            color: var(--text2);
+        }
+
+        .copyright a {
+            color: var(--accent2);
+            text-decoration: none;
+        }
+
+        .made-by {
+            margin-top: 8px;
+            font-size: 0.72rem;
+            color: var(--text2);
+        }
+
+        .made-by a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ═══ MOBILE ═══ */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 16px;
+                height: 56px;
             }
 
-            .logo-icon {
-                width: 32px;
-                height: 32px;
+            .nav-logo h3 {
+                font-size: 1rem;
             }
 
-            .logo-text {
-                font-size: 0.92rem;
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.78rem;
             }
 
-            .nav-btn span:last-child {
-                display: none;
+            .file-bar {
+                padding: 16px;
             }
 
-            .nav-btn {
-                padding: 8px 12px;
+            .file-bar-inner {
+                flex-wrap: wrap;
+                gap: 12px;
             }
 
-            .theme-toggle {
-                width: 36px;
-                height: 36px;
+            .file-size-badge {
+                margin-left: 0;
             }
 
-            .main {
-                margin: 14px auto;
-                padding: 0 10px;
-            }
-
-            .player-card {
-                border-radius: 16px;
-            }
-
-            /* Video.js mobile: bigger touch targets */
             .video-js .vjs-big-play-button {
                 width: 56px !important;
                 height: 56px !important;
@@ -817,10 +580,6 @@
 
             .video-js .vjs-control-bar {
                 height: 44px !important;
-            }
-
-            .video-js .vjs-progress-control {
-                top: -10px;
             }
 
             .video-js .vjs-progress-holder {
@@ -833,274 +592,229 @@
                 right: -8px;
             }
 
-            /* Hide volume on mobile (phone has its own) */
             .video-js .vjs-volume-panel {
                 display: none !important;
             }
 
-            .file-info {
-                padding: 16px;
-                gap: 12px;
-            }
-
-            .file-icon {
-                width: 42px;
-                height: 42px;
-            }
-
-            .file-name {
-                font-size: 0.88rem;
-            }
-
-            .actions {
-                padding: 0 16px 16px;
+            .player-btns {
+                grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
-                flex-direction: column;
             }
 
-            .btn-download {
-                height: 50px;
-                justify-content: center;
+            .player-btn {
+                padding: 12px;
+                font-size: 0.75rem;
+                gap: 8px;
             }
 
-            .btn-download__text {
-                transform: translateX(0);
-                text-align: center;
-                flex: 1;
-                padding-left: 16px;
-                font-size: 0.88rem;
+            .player-btn img {
+                width: 24px;
+                height: 24px;
             }
 
-            .btn-download__icon {
-                position: relative;
-                right: auto;
-                width: 42px;
-                height: calc(100% - 6px);
-                margin: 3px;
-                flex-shrink: 0;
+            .section {
+                padding: 50px 0;
             }
 
-            .btn-download:hover .btn-download__text {
-                color: var(--text-primary);
+            .section h1 {
+                font-size: 1.5rem;
             }
 
-            .btn-download:hover .btn-download__icon {
-                width: 42px;
-            }
-
-            .btn-ghost {
-                height: 46px;
-            }
-
-            .stats-bar {
-                gap: 16px;
-                padding: 14px;
-            }
-
-            .stat-value {
+            .section p {
                 font-size: 0.9rem;
             }
 
-            .audio-artwork {
+            .ext-players {
+                padding: 20px 14px;
+            }
+
+            footer .cta {
+                font-size: 1.1rem;
+            }
+
+            .audio-icon-wrap {
                 width: 90px;
                 height: 90px;
-                border-radius: 18px;
-            }
-
-            .audio-artwork .material-icons-round {
                 font-size: 36px;
-            }
-
-            .player-wrapper.audio-mode {
-                padding: 32px 16px;
-            }
-
-            .orb-1 {
-                width: 250px;
-                height: 250px;
-            }
-
-            .orb-2 {
-                width: 200px;
-                height: 200px;
-            }
-
-            .orb-3 {
-                width: 150px;
-                height: 150px;
+                border-radius: 20px;
             }
         }
 
-        /* Tiny screens */
-        @media (max-width: 380px) {
-            .logo-text {
+        @media (max-width: 420px) {
+            .nav-links {
                 display: none;
             }
 
-            .video-js .vjs-big-play-button {
-                width: 48px !important;
-                height: 48px !important;
-                line-height: 48px !important;
-            }
-
-            .stats-bar {
-                gap: 12px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
+            .player-btns {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Background Orbs -->
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="https://t.me/PikaFileToLinkBot" class="logo">
-            <div class="logo-icon">
-                <span class="material-icons-round">link</span>
-            </div>
-            <div class="logo-text"><span>FileToLink</span>Bot</div>
+    <!-- NAVBAR -->
+    <nav>
+        <a href="https://t.me/PikaFileToLinkBot" class="nav-logo">
+            <div class="nav-logo-icon"><i class="fa-solid fa-link"></i></div>
+            <h3><span>FileToLink</span>Bot</h3>
         </a>
-        <div class="nav-actions">
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                <span class="material-icons-round sun-icon">light_mode</span>
-                <span class="material-icons-round moon-icon">dark_mode</span>
-            </button>
-            <a href="https://t.me/PikaFileToLinkBot" class="nav-btn" target="_blank">
-                <span class="material-icons-round">send</span>
-                <span>Open Bot</span>
-            </a>
+        <div class="nav-links">
+            <a href="#main" class="active">Home</a>
+            <a href="#welcome">About</a>
         </div>
     </nav>
 
-    <!-- Main -->
-    <main class="main">
-        <div class="player-card">
-            <div class="player-wrapper" id="playerWrapper">
-                {% set is_audio = file_name.lower().endswith(('.mp3', '.wav', '.flac', '.ogg', '.aac', '.m4a', '.wma',
-                '.opus')) %}
-                {% if is_audio %}
-                <!-- Audio Mode -->
-                <div class="audio-mode"
-                    style="padding:48px 24px;background:linear-gradient(135deg,rgba(20,20,35,0.9),rgba(30,20,50,0.9));text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;">
-                    <div class="audio-artwork">
-                        <span class="material-icons-round">music_note</span>
-                    </div>
-                    <div class="audio-player-wrap" style="width:100%">
-                        <audio id="audioPlayer" controls preload="metadata" style="width:100%">
-                            <source src="{{ file_url }}" />
-                        </audio>
-                    </div>
+    <div class="content">
+        <!-- PLAYER -->
+        <section class="player-section" id="main">
+            {% set is_audio = file_name.lower().endswith(('.mp3', '.wav', '.flac', '.ogg', '.aac', '.m4a', '.wma',
+            '.opus')) %}
+            {% if is_audio %}
+            <div class="audio-section">
+                <div class="audio-icon-wrap">
+                    <i class="fa-solid fa-music"></i>
                 </div>
-                {% else %}
-                <!-- Video Mode -->
-                <video-js id="videoPlayer" class="vjs-big-play-centered vjs-fluid" controls preload="metadata"
-                    playsinline>
-                    <source src="{{ file_url }}" type="video/mp4" />
-                    <p class="vjs-no-js">
-                        Please enable JavaScript or use a browser that supports Video.js
-                    </p>
-                </video-js>
-                {% endif %}
+                <audio controls preload="metadata" style="width:100%;max-width:600px;">
+                    <source src="{{ file_url }}">
+                </audio>
             </div>
+            {% else %}
+            <video-js id="videoPlayer" class="vjs-big-play-centered vjs-fluid" controls preload="metadata" playsinline>
+                <source src="{{ file_url }}" type="video/mp4">
+            </video-js>
+            {% endif %}
+        </section>
 
-            <div class="file-info">
+        <!-- FILE INFO BAR -->
+        <div class="file-bar">
+            <div class="file-bar-inner">
                 <div class="file-icon">
-                    <span class="material-icons-round">{% if is_audio %}headphones{% else %}play_circle{% endif
-                        %}</span>
+                    {% if is_audio %}
+                    <i class="fa-solid fa-headphones"></i>
+                    {% else %}
+                    <i class="fa-solid fa-film"></i>
+                    {% endif %}
                 </div>
-                <div class="file-details">
-                    <div class="file-name">{{ file_name }}</div>
-                    <div class="file-meta">
-                        <span class="material-icons-round">storage</span>
-                        {{ file_size }}
-                        <span class="meta-sep"></span>
-                        <span class="meta-badge">
-                            <span class="material-icons-round">verified_user</span>
-                            Secure
-                        </span>
-                    </div>
+                <div class="file-info">
+                    <h4>File Name</h4>
+                    <p>{{ file_name }}</p>
+                </div>
+                <div class="file-size-badge">
+                    <i class="fa-solid fa-hard-drive" style="margin-right:6px;"></i>{{ file_size }}
                 </div>
             </div>
+        </div>
 
-            <div class="actions">
-                <a href="{{ file_url }}" class="btn-download" download>
-                    <span class="btn-download__text">Download File</span>
-                    <span class="btn-download__icon">
-                        <span class="material-icons-round">download</span>
-                    </span>
+        <!-- EXTERNAL PLAYER BUTTONS -->
+        {% if not is_audio %}
+        <div class="ext-players">
+            <h3>Open in External Player</h3>
+            <div class="player-btns">
+                <a class="player-btn" onclick="openExtPlayer('vlc')">
+                    <img src="https://i.postimg.cc/15TQ4y7B/vlc.png" alt="VLC">
+                    VLC Player
                 </a>
-                <a href="https://t.me/PikaFileToLinkBot" class="btn-ghost" target="_blank">
-                    <span class="material-icons-round">send</span>
-                    <span>Open Bot</span>
+                <a class="player-btn" onclick="openExtPlayer('mx')">
+                    <img src="https://i.postimg.cc/sx4Msv4T/mx.png" alt="MX">
+                    MX Player
+                </a>
+                <a class="player-btn" onclick="openExtPlayer('playit')">
+                    <img src="https://i.postimg.cc/RVGWYJFF/playit.png" alt="PLAYit">
+                    PLAYit
+                </a>
+                <a class="player-btn" onclick="openExtPlayer('km')">
+                    <img src="https://i.postimg.cc/wT9tFQ9Z/km.png" alt="KM">
+                    KM Player
+                </a>
+                <a class="player-btn" onclick="openExtPlayer('s')">
+                    <img src="https://i.postimg.cc/XYJr6NGg/s.png" alt="S Player">
+                    S Player
+                </a>
+                <a class="player-btn" onclick="openExtPlayer('hd')">
+                    <img src="https://i.postimg.cc/rFT43LNh/hd.png" alt="HD Player">
+                    HD Player (4K)
+                </a>
+                <a class="player-btn download-btn" href="{{ file_url }}" download>
+                    <i class="fa-solid fa-download" style="font-size:20px;"></i>
+                    Download Video
                 </a>
             </div>
         </div>
+        {% endif %}
 
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-value">HD</div>
-                <div class="stat-label">Quality</div>
+        <!-- SECTIONS -->
+        <div class="sections">
+            <!-- Welcome -->
+            <div class="section" id="welcome">
+                <h1>WELCOME TO OUR <span>STREAMING</span> PAGE</h1>
+                <p>
+                    We're thrilled to have <strong>you</strong> here.
+                    Get ready for an amazing <strong>experience</strong> filled with
+                    <strong>entertainment</strong>, <strong>fun</strong>, and <strong>surprises</strong>.
+                    Grab your snacks, sit back, and <strong>enjoy</strong> the show!
+                </p>
             </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <div class="stat-value">Fast</div>
-                <div class="stat-label">Streaming</div>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <div class="stat-value">Free</div>
-                <div class="stat-label">Forever</div>
-            </div>
-        </div>
-    </main>
 
-    <div class="footer">
-        <div>
-            Crafted with
-            <span class="material-icons-round"
-                style="color:var(--accent-pink);font-size:13px;vertical-align:middle;">favorite</span>
-            by <a href="https://t.me/listkiss">Shahadat Hassan</a>
+            <!-- Channels -->
+            <div class="section" id="channels">
+                <h1>OUR <span>CHANNEL</span></h1>
+                <div class="section-links">
+                    <a href="https://t.me/Team_SixtyNine" class="section-link primary">
+                        <i class="fa-brands fa-telegram"></i>&nbsp; Team SixtyNine
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bot -->
+            <div class="section" id="bots">
+                <h1>OUR <span>BOT</span></h1>
+                <div class="section-links">
+                    <a href="https://t.me/PikaFileToLinkBot" class="section-link">
+                        <i class="fa-solid fa-robot"></i>&nbsp; FileToLink Bot
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="section" id="contact">
+                <p>Have questions or need support? Reach out to us on Telegram!</p>
+                <div class="section-links" style="margin-top:20px;">
+                    <a href="https://t.me/listkiss" class="section-link primary">
+                        <i class="fa-solid fa-paper-plane"></i>&nbsp; Contact
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="footer-brand">
-            <span class="material-icons-round">link</span>
-            FileToLink v3.0 — Premium Media Streaming
-        </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="cta">
+                VISIT <a href="#bots"><span>OUR BOT</span></a> FOR MORE INFO
+            </div>
+            <p class="disclaimer">
+                Welcome To Our Online Streaming Platform! Our Website Allows Users To Generate
+                Streamable Links For Various Files Using Telegram Bots. Please Note That We Are
+                Not Responsible For The Content Shared Or Streamed Through Our Service. Users Are
+                Encouraged To Respect Copyright Laws And Adhere To Our Community Guidelines.
+                Enjoy Easy, Hassle-Free File Streaming.
+            </p>
+            <div class="footer-icons">
+                <a href="https://t.me/Team_SixtyNine"><i class="fa-brands fa-telegram"></i></a>
+                <a href="https://t.me/PikaFileToLinkBot"><i class="fa-solid fa-robot"></i></a>
+            </div>
+            <div class="copyright">
+                Copyright © 2025 <a href="https://t.me/Team_SixtyNine">Team SixtyNine</a>. All Rights Reserved.
+            </div>
+            <div class="made-by">
+                Made by <a href="https://t.me/listkiss">Shahadat Hassan</a>
+            </div>
+        </footer>
     </div>
 
-    <!-- Video.js (only for video) -->
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
     <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById("themeToggle");
-        const html = document.documentElement;
-        const savedTheme = localStorage.getItem("theme") || "dark";
-        html.setAttribute("data-theme", savedTheme);
-
-        themeToggle.addEventListener("click", () => {
-            const cur = html.getAttribute("data-theme");
-            const next = cur === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", next);
-            localStorage.setItem("theme", next);
-        });
-
-        // Initialize Video.js
+        // Video.js init
         const videoEl = document.getElementById("videoPlayer");
         if (videoEl) {
             const player = videojs("videoPlayer", {
@@ -1111,10 +825,7 @@
                 responsive: true,
                 fluid: true,
                 html5: {
-                    vhs: {
-                        overrideNative: false,
-                        enableLowInitialPlaylist: true
-                    },
+                    vhs: { overrideNative: false },
                     nativeVideoTracks: true,
                     nativeAudioTracks: true,
                     nativeTextTracks: true
@@ -1135,15 +846,61 @@
             });
 
             player.ready(function () {
-                console.log("🎬 FileToLink Video.js Player Ready");
-            });
-
-            // Handle errors gracefully
-            player.on("error", function () {
-                const err = player.error();
-                console.warn("Player error:", err);
+                console.log("🎬 FileToLink Player Ready");
             });
         }
+
+        // External player deep links
+        const fileUrl = "{{ file_url }}";
+
+        function openExtPlayer(type) {
+            let url = "";
+            switch (type) {
+                case "vlc":
+                    url = "vlc://" + fileUrl;
+                    break;
+                case "mx":
+                    url = "intent:" + fileUrl + "#Intent;package=com.mxtech.videoplayer.ad;end";
+                    break;
+                case "playit":
+                    url = "intent:" + fileUrl + "#Intent;package=com.playit.videoplayer;end";
+                    break;
+                case "km":
+                    url = "intent:" + fileUrl + "#Intent;package=com.kmplayer;end";
+                    break;
+                case "s":
+                    url = "intent:" + fileUrl + "#Intent;package=com.onezapp.splayer;end";
+                    break;
+                case "hd":
+                    url = "intent:" + fileUrl + "#Intent;package=com.hdplayer.video;end";
+                    break;
+            }
+            if (url) window.location.href = url;
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener("click", e => {
+                e.preventDefault();
+                const target = document.querySelector(a.getAttribute("href"));
+                if (target) target.scrollIntoView({ behavior: "smooth" });
+            });
+        });
+
+        // Active nav link on scroll
+        const sections = document.querySelectorAll(".section, .player-section");
+        const navLinks = document.querySelectorAll(".nav-links a");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(s => {
+                if (window.scrollY >= s.offsetTop - 100) {
+                    current = s.getAttribute("id");
+                }
+            });
+            navLinks.forEach(a => a.classList.remove("active"));
+            const activeLink = document.querySelector(`.nav-links a[href="#${current}"]`);
+            if (activeLink) activeLink.classList.add("active");
+        });
     </script>
 </body>
 
