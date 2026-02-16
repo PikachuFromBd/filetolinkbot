@@ -1,29 +1,25 @@
 # Don't Remove Credit @pikachufrombd
 
 class Text:
-    # 1. START MESSAGE
     START_TXT = """👋 <b>ʜᴇʏ {}!</b>
 
-🚀 <b>ɪ'ᴍ <a href='https://t.me/{}'>{}</a></b>
+⚡ <b>ɪ'ᴍ <a href='https://t.me/{}'>{}</a></b>
 <b>ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ʙᴏᴛ!</b>
 
 ━━━━━━━━━━━━━━━━━━
-📂 <i>Send me any file and get instant</i>
-🖥 <i>Stream & Download links!</i>
+📤 Send me any file, video, or document
+🖥 Get instant stream & download links
+🔗 Links never expire — share anywhere
+📂 Use /myfiles to see your uploads
 ━━━━━━━━━━━━━━━━━━
 
-👨‍💻 <b>ᴅᴇᴠᴇʟᴏᴘᴇʀ :</b> <a href='https://t.me/pikachufrombd'>@pikachufrombd</a>
-📢 <b>ᴄʜᴀɴɴᴇʟ :</b> <a href='https://t.me/Team_SixtyNine'>@Team_SixtyNine</a>
+✨ <b>Send me any media to get started!</b>"""
 
-✨ <b>Send me any media & witness the magic!</b>"""
-
-    # 2. LOG MESSAGE
     LOG_TEXT = """🚀 <b>#NewUser</b>
 
 🆔 <b>ID :</b> <code>{}</code>
 👤 <b>Name :</b> <i>{}</i>"""
 
-    # 3. RESTART MESSAGE
     RESTART_TXT = """🔄 <b>Bot Restarted!</b>
 
 📅 <b>Date :</b> <code>{}</code>
@@ -32,7 +28,6 @@ class Text:
 
 🛠️ <b>Build :</b> <code>v3.0 [ Client ]</code>"""
 
-    # 4. LINK GENERATED MESSAGE
     LINK_TXT = """✅ <b>ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ!</b>
 
 ━━━━━━━━━━━━━━━━━━
@@ -45,7 +40,6 @@ class Text:
 
 ⚠️ <i>ʟɪɴᴋ ᴡᴏɴ'ᴛ ᴇxᴘɪʀᴇ ᴛɪʟʟ ɪ ᴅᴇʟᴇᴛᴇ</i>"""
 
-    # 5. LOG FILE MESSAGE
     LOG_FILE_TXT = """•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ꜰᴏʀ ɪᴅ #{user_id}
 •• ᴜꜱᴇʀɴᴀᴍᴇ : {username}
 

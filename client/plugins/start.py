@@ -44,9 +44,6 @@ def start_markup():
             InlineKeyboardButton("📢 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ", url="https://t.me/Team_SixtyNine")
         ],
         [
-            InlineKeyboardButton("👨‍💻 ᴅᴇᴠᴇʟᴏᴘᴇʀ", url="tg://user?id=6129625814")
-        ],
-        [
             InlineKeyboardButton("📂 ᴍʏ ꜰɪʟᴇꜱ", callback_data="show_myfiles_1")
         ]
     ])
