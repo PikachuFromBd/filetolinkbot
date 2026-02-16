@@ -8,6 +8,7 @@
     <meta name="description" content="Download {{ file_name }} — Powered by FileToLink">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         *,
         *::before,
@@ -126,14 +127,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 2.2rem;
+            color: #fff;
             box-shadow: 0 8px 32px var(--accent-glow);
             animation: iconFloat 3s ease-in-out infinite;
-        }
-
-        .file-icon-wrapper svg {
-            width: 36px;
-            height: 36px;
-            color: #fff;
         }
 
         .file-name {
@@ -225,6 +222,10 @@
             gap: 5px;
         }
 
+        .info-item i {
+            font-size: 0.9rem;
+        }
+
         .footer {
             text-align: center;
             padding: 20px;
@@ -236,6 +237,11 @@
         .footer a {
             color: var(--accent);
             text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .footer a:hover {
+            opacity: 0.8;
         }
 
         @media (max-width: 480px) {
@@ -247,11 +253,7 @@
                 width: 72px;
                 height: 72px;
                 border-radius: 20px;
-            }
-
-            .file-icon-wrapper svg {
-                width: 30px;
-                height: 30px;
+                font-size: 1.8rem;
             }
 
             .file-name {
@@ -270,41 +272,31 @@
     <div class="container">
         <div class="card">
             <div class="file-icon-wrapper">
-                <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                </svg>
+                <i class="ri-file-3-line"></i>
             </div>
 
             <div class="file-name">{{ file_name }}</div>
             <div class="file-size">
-                <span>📦 {{ file_size }}</span>
+                <span><i class="ri-hard-drive-3-line"></i> {{ file_size }}</span>
             </div>
 
-            <a href="{{ file_url }}" class="btn btn-primary" download id="downloadBtn">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                </svg>
-                Download Now
+            <a href="{{ file_url }}" class="btn btn-primary" download>
+                <i class="ri-download-2-line"></i> Download Now
             </a>
 
             <a href="https://t.me/PikaFileToLinkBot" class="btn btn-secondary" target="_blank">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.28-.02-.12.03-2.02 1.28-5.69 3.77-.54.37-1.03.55-1.47.54-.48-.01-1.4-.27-2.09-.49-.84-.28-1.51-.42-1.45-.89.03-.25.38-.5 1.04-.78 4.07-1.77 6.79-2.94 8.15-3.5 3.88-1.62 4.69-1.9 5.21-1.91.12 0 .37.03.54.17.14.12.18.28.2.47-.01.06.01.24 0 .37z" />
-                </svg>
-                Get More Files via Bot
+                <i class="ri-telegram-line"></i> Get More Files via Bot
             </a>
 
             <div class="divider"></div>
             <div class="info-row">
-                <div class="info-item">🔒 Secure</div>
-                <div class="info-item">⚡ Fast</div>
-                <div class="info-item">♾️ No Expiry</div>
+                <div class="info-item"><i class="ri-shield-check-line"></i> Secure</div>
+                <div class="info-item"><i class="ri-flashlight-line"></i> Fast</div>
+                <div class="info-item"><i class="ri-infinity-line"></i> No Expiry</div>
             </div>
         </div>
         <div class="footer">
-            Powered by <a href="https://t.me/pikachufrombd">@pikachufrombd</a> · FileToLink v3.0
+            By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
         </div>
     </div>
 </body>

@@ -8,6 +8,7 @@
     <meta name="description" content="Stream {{ file_name }} — Powered by FileToLink">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
         *,
@@ -21,7 +22,6 @@
         :root {
             --bg-primary: #0a0a0f;
             --bg-card: rgba(255, 255, 255, 0.03);
-            --bg-card-hover: rgba(255, 255, 255, 0.06);
             --border: rgba(255, 255, 255, 0.06);
             --text-primary: #f0f0f5;
             --text-secondary: #8b8b9e;
@@ -45,7 +45,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background */
         body::before {
             content: '';
             position: fixed;
@@ -70,12 +69,6 @@
             }
         }
 
-        .container {
-            width: 100%;
-            max-width: 860px;
-            animation: fadeUp 0.6s ease-out;
-        }
-
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -88,7 +81,12 @@
             }
         }
 
-        /* Player Card */
+        .container {
+            width: 100%;
+            max-width: 860px;
+            animation: fadeUp 0.6s ease-out;
+        }
+
         .player-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -118,7 +116,6 @@
             background: linear-gradient(135deg, #1a1a2e, #16213e);
         }
 
-        /* Plyr overrides */
         .plyr--video {
             border-radius: 0;
         }
@@ -135,7 +132,6 @@
             background: var(--accent);
         }
 
-        /* File Info */
         .file-info {
             padding: 24px;
         }
@@ -157,6 +153,7 @@
             justify-content: center;
             font-size: 1.3rem;
             flex-shrink: 0;
+            color: #fff;
         }
 
         .file-details {
@@ -188,7 +185,6 @@
             background: var(--text-secondary);
         }
 
-        /* Buttons */
         .actions {
             display: flex;
             gap: 10px;
@@ -234,7 +230,6 @@
             transform: translateY(-2px);
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -246,9 +241,13 @@
         .footer a {
             color: var(--accent);
             text-decoration: none;
+            transition: opacity 0.2s;
         }
 
-        /* Mobile */
+        .footer a:hover {
+            opacity: 0.8;
+        }
+
         @media (max-width: 640px) {
             body {
                 padding: 10px;
@@ -295,11 +294,11 @@
             </div>
             <div class="file-info">
                 <div class="file-header">
-                    <div class="file-icon">▶</div>
+                    <div class="file-icon"><i class="ri-play-circle-fill"></i></div>
                     <div class="file-details">
                         <div class="file-name">{{ file_name }}</div>
                         <div class="file-meta">
-                            <span>{{ file_size }}</span>
+                            <span><i class="ri-hard-drive-3-line"></i> {{ file_size }}</span>
                             <span class="meta-dot"></span>
                             <span>FileToLink</span>
                         </div>
@@ -307,24 +306,16 @@
                 </div>
                 <div class="actions">
                     <a href="{{ file_url }}" class="btn btn-primary" download>
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                        </svg>
-                        Download
+                        <i class="ri-download-2-line"></i> Download
                     </a>
                     <a href="https://t.me/PikaFileToLinkBot" class="btn btn-secondary" target="_blank">
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.28-.02-.12.03-2.02 1.28-5.69 3.77-.54.37-1.03.55-1.47.54-.48-.01-1.4-.27-2.09-.49-.84-.28-1.51-.42-1.45-.89.03-.25.38-.5 1.04-.78 4.07-1.77 6.79-2.94 8.15-3.5 3.88-1.62 4.69-1.9 5.21-1.91.12 0 .37.03.54.17.14.12.18.28.2.47-.01.06.01.24 0 .37z" />
-                        </svg>
-                        Open Bot
+                        <i class="ri-telegram-line"></i> Open Bot
                     </a>
                 </div>
             </div>
         </div>
         <div class="footer">
-            Powered by <a href="https://t.me/pikachufrombd">@pikachufrombd</a> · FileToLink v3.0
+            By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
         </div>
     </div>
 
@@ -335,12 +326,8 @@
             settings: ['speed'],
             speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
         });
-
-        // Audio mode styling
         const audioEl = document.querySelector('audio');
-        if (audioEl) {
-            document.getElementById('playerWrapper').classList.add('audio-mode');
-        }
+        if (audioEl) document.getElementById('playerWrapper').classList.add('audio-mode');
     </script>
 </body>
 
