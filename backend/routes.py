@@ -203,22 +203,53 @@ async def media_streamer(request: web.Request, message_id: int, secure_hash: str
         file_id, offset, first_part_cut, last_part_cut, part_count, chunk_size
     )
 
-    mime_type = file_id.mime_type
+    # ── Smart mime type resolution ──
+    # Priority: DB record > file_id (from Telegram) > guess from name > fallback
+    mime_type = None
     file_name = file_id.file_name
-    disposition = "attachment"
 
-    if mime_type:
-        if not file_name:
-            try:
-                file_name = f"{secrets.token_hex(2)}.{mime_type.split('/')[1]}"
-            except (IndexError, AttributeError):
-                file_name = f"{secrets.token_hex(2)}.unknown"
+    # 1. Try DB record first (client bot saved the correct mime)
+    try:
+        db_record = await db.get_file(message_id)
+        if db_record:
+            db_mime = db_record.get('mime_type')
+            if db_mime and db_mime != 'application/octet-stream':
+                mime_type = db_mime
+            if not file_name:
+                file_name = db_record.get('file_name', '')
+    except Exception:
+        pass
+
+    # 2. Use file_id.mime_type from Telegram (via file_properties.py)
+    if not mime_type:
+        telegram_mime = file_id.mime_type
+        if telegram_mime and telegram_mime != 'application/octet-stream':
+            mime_type = telegram_mime
+
+    # 3. Guess from file name extension
+    if not mime_type and file_name:
+        mime_type = mimetypes.guess_type(file_name)[0]
+
+    # 4. Fallback
+    if not mime_type:
+        mime_type = 'application/octet-stream'
+
+    # Generate file name if missing
+    if not file_name:
+        try:
+            ext = mime_type.split('/')[1]
+            if ext in ('octet-stream', 'x-unknown'):
+                ext = 'bin'
+        except (IndexError, AttributeError):
+            ext = 'bin'
+        file_name = f"{secrets.token_hex(4)}.{ext}"
+
+    # Inline for streamable content, attachment for download
+    tag = mime_type.split('/')[0] if mime_type else ''
+    if tag in ('video', 'audio', 'image'):
+        disposition = 'inline'
     else:
-        if file_name:
-            mime_type = mimetypes.guess_type(file_name)[0] or "application/octet-stream"
-        else:
-            mime_type = "application/octet-stream"
-            file_name = f"{secrets.token_hex(2)}.unknown"
+        disposition = 'attachment'
 
     return web.Response(
         status=206 if range_header else 200,

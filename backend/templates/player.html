@@ -1,1564 +1,1547 @@
 <!doctype html>
 <html lang="en" data-theme="dark">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ file_name }} — FileToLink</title>
-    <meta
-      name="description"
-      content="Stream {{ file_name }} — Powered by FileToLink"
-    />
+    <meta name="description" content="Stream {{ file_name }} — Powered by FileToLink" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Round"
+        rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      :root {
-        --bg-primary: #0a0a12;
-        --bg-secondary: #12121a;
-        --bg-glass: rgba(255, 255, 255, 0.03);
-        --bg-glass-hover: rgba(255, 255, 255, 0.06);
-        --bg-nav: rgba(15, 15, 25, 0.6);
-        --bg-loader: rgba(10, 10, 18, 0.95);
-        --border-glass: rgba(255, 255, 255, 0.08);
-        --border-glass-light: rgba(255, 255, 255, 0.12);
-        --text-primary: #f5f5fa;
-        --text-secondary: #8b8b9e;
-        --text-muted: #5a5a6e;
-        --accent: #7c6df5;
-        --accent-secondary: #c084fc;
-        --accent-pink: #f472b6;
-        --accent-glow: rgba(124, 109, 245, 0.4);
-        --gradient-1: linear-gradient(
-          135deg,
-          #7c6df5 0%,
-          #c084fc 50%,
-          #f472b6 100%
-        );
-        --gradient-glass: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1) 0%,
-          rgba(255, 255, 255, 0.02) 100%
-        );
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-        --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
-        --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
-        --radius: 24px;
-        --radius-sm: 14px;
-        --radius-xs: 10px;
-        --loader-path: #2a2a3a;
-        --loader-dot: #7c6df5;
-      }
-
-      /* ─── Light Theme ─── */
-      [data-theme="light"] {
-        --bg-primary: #f8f9fc;
-        --bg-secondary: #ffffff;
-        --bg-glass: rgba(255, 255, 255, 0.7);
-        --bg-glass-hover: rgba(255, 255, 255, 0.85);
-        --bg-nav: rgba(255, 255, 255, 0.8);
-        --bg-loader: rgba(248, 249, 252, 0.98);
-        --border-glass: rgba(0, 0, 0, 0.06);
-        --border-glass-light: rgba(0, 0, 0, 0.1);
-        --text-primary: #1a1a2e;
-        --text-secondary: #5a5a7a;
-        --text-muted: #8a8aa0;
-        --accent-glow: rgba(124, 109, 245, 0.25);
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-        --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
-        --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
-        --loader-path: #d0d0e0;
-        --loader-dot: #7c6df5;
-      }
-
-      [data-theme="light"] .bg-orbs {
-        filter: blur(100px);
-        opacity: 0.5;
-      }
-
-      [data-theme="light"] .orb-1 {
-        background: radial-gradient(
-          circle,
-          rgba(124, 109, 245, 0.2) 0%,
-          transparent 70%
-        );
-      }
-
-      [data-theme="light"] .orb-2 {
-        background: radial-gradient(
-          circle,
-          rgba(192, 132, 252, 0.15) 0%,
-          transparent 70%
-        );
-      }
-
-      [data-theme="light"] .orb-3 {
-        background: radial-gradient(
-          circle,
-          rgba(244, 114, 182, 0.15) 0%,
-          transparent 70%
-        );
-      }
-
-      [data-theme="light"] .player-wrapper {
-        background: linear-gradient(
-          180deg,
-          rgba(0, 0, 0, 0.02) 0%,
-          rgba(0, 0, 0, 0.05) 100%
-        );
-      }
-
-      [data-theme="light"] .player-card {
-        box-shadow:
-          var(--shadow-md),
-          inset 0 1px 0 rgba(255, 255, 255, 0.8);
-      }
-
-      body {
-        font-family:
-          "Inter",
-          system-ui,
-          -apple-system,
-          sans-serif;
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        min-height: 100vh;
-        overflow-x: hidden;
-        position: relative;
-        transition:
-          background 0.4s ease,
-          color 0.4s ease;
-      }
-
-      /* ─── Loading Screen ─── */
-      .loading-screen {
-        position: fixed;
-        inset: 0;
-        background: var(--bg-loader);
-        backdrop-filter: blur(20px);
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 32px;
-        transition:
-          opacity 0.5s ease,
-          visibility 0.5s ease;
-      }
-
-      .loading-screen.hidden {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      .loaders-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 24px;
-      }
-
-      .loader {
-        --path: var(--loader-path);
-        --dot: var(--loader-dot);
-        --duration: 3s;
-        width: 44px;
-        height: 44px;
-        position: relative;
-      }
-
-      .loader:before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        position: absolute;
-        display: block;
-        background: var(--dot);
-        top: 37px;
-        left: 19px;
-        transform: translate(-18px, -18px);
-        animation: dotRect var(--duration)
-          cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
-      }
-
-      .loader svg {
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-
-      .loader svg rect,
-      .loader svg polygon,
-      .loader svg circle {
-        fill: none;
-        stroke: var(--path);
-        stroke-width: 10px;
-        stroke-linejoin: round;
-        stroke-linecap: round;
-      }
-
-      .loader svg polygon {
-        stroke-dasharray: 145 76 145 76;
-        stroke-dashoffset: 0;
-        animation: pathTriangle var(--duration)
-          cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
-      }
-
-      .loader svg rect {
-        stroke-dasharray: 192 64 192 64;
-        stroke-dashoffset: 0;
-        animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
-      }
-
-      .loader svg circle {
-        stroke-dasharray: 150 50 150 50;
-        stroke-dashoffset: 75;
-        animation: pathCircle var(--duration)
-          cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
-      }
-
-      .loader.triangle {
-        width: 48px;
-      }
-
-      .loader.triangle:before {
-        left: 21px;
-        transform: translate(-10px, -18px);
-        animation: dotTriangle var(--duration)
-          cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
-      }
-
-      @keyframes pathTriangle {
-        33% {
-          stroke-dashoffset: 74;
-        }
-        66% {
-          stroke-dashoffset: 147;
-        }
-        100% {
-          stroke-dashoffset: 221;
-        }
-      }
-
-      @keyframes dotTriangle {
-        33% {
-          transform: translate(0, 0);
-        }
-        66% {
-          transform: translate(10px, -18px);
-        }
-        100% {
-          transform: translate(-10px, -18px);
-        }
-      }
-
-      @keyframes pathRect {
-        25% {
-          stroke-dashoffset: 64;
-        }
-        50% {
-          stroke-dashoffset: 128;
-        }
-        75% {
-          stroke-dashoffset: 192;
-        }
-        100% {
-          stroke-dashoffset: 256;
-        }
-      }
-
-      @keyframes dotRect {
-        25% {
-          transform: translate(0, 0);
-        }
-        50% {
-          transform: translate(18px, -18px);
-        }
-        75% {
-          transform: translate(0, -36px);
-        }
-        100% {
-          transform: translate(-18px, -18px);
-        }
-      }
-
-      @keyframes pathCircle {
-        25% {
-          stroke-dashoffset: 125;
-        }
-        50% {
-          stroke-dashoffset: 175;
-        }
-        75% {
-          stroke-dashoffset: 225;
-        }
-        100% {
-          stroke-dashoffset: 275;
-        }
-      }
-
-      .loading-text {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .loading-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        letter-spacing: -0.3px;
-      }
-
-      .loading-subtitle {
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-      }
-
-      .loading-progress {
-        width: 200px;
-        height: 3px;
-        background: var(--border-glass);
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 8px;
-      }
-
-      .loading-progress-bar {
-        height: 100%;
-        background: var(--gradient-1);
-        border-radius: 10px;
-        animation: loadingProgress 6s ease-in-out forwards;
-      }
-
-      @keyframes loadingProgress {
-        0% {
-          width: 0%;
-        }
-        20% {
-          width: 25%;
-        }
-        40% {
-          width: 45%;
-        }
-        60% {
-          width: 65%;
-        }
-        80% {
-          width: 85%;
-        }
-        100% {
-          width: 100%;
-        }
-      }
-
-      /* ─── Animated Background Orbs ─── */
-      .bg-orbs {
-        position: fixed;
-        inset: 0;
-        overflow: hidden;
-        z-index: -1;
-        filter: blur(80px);
-        transition:
-          filter 0.4s ease,
-          opacity 0.4s ease;
-      }
-
-      .orb {
-        position: absolute;
-        border-radius: 50%;
-        animation: float 20s ease-in-out infinite;
-      }
-
-      .orb-1 {
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(
-          circle,
-          rgba(124, 109, 245, 0.3) 0%,
-          transparent 70%
-        );
-        top: -10%;
-        left: -10%;
-        animation-delay: 0s;
-      }
-
-      .orb-2 {
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(
-          circle,
-          rgba(192, 132, 252, 0.25) 0%,
-          transparent 70%
-        );
-        top: 50%;
-        right: -5%;
-        animation-delay: -7s;
-        animation-duration: 25s;
-      }
-
-      .orb-3 {
-        width: 350px;
-        height: 350px;
-        background: radial-gradient(
-          circle,
-          rgba(244, 114, 182, 0.2) 0%,
-          transparent 70%
-        );
-        bottom: -5%;
-        left: 30%;
-        animation-delay: -14s;
-        animation-duration: 22s;
-      }
-
-      @keyframes float {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-        }
-        25% {
-          transform: translate(30px, -30px) scale(1.05);
-        }
-        50% {
-          transform: translate(-20px, 20px) scale(0.95);
-        }
-        75% {
-          transform: translate(20px, 10px) scale(1.02);
-        }
-      }
-
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px) scale(0.98);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-
-      @keyframes shimmer {
-        0% {
-          background-position: -200% center;
-        }
-        100% {
-          background-position: 200% center;
-        }
-      }
-
-      @keyframes pulse-glow {
-        0%,
-        100% {
-          box-shadow:
-            0 0 20px var(--accent-glow),
-            0 8px 32px rgba(124, 109, 245, 0.2);
-        }
-        50% {
-          box-shadow:
-            0 0 40px var(--accent-glow),
-            0 12px 48px rgba(124, 109, 245, 0.3);
-        }
-      }
-
-      /* ─── Navbar ─── */
-      .navbar {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: var(--bg-nav);
-        backdrop-filter: blur(30px) saturate(180%);
-        -webkit-backdrop-filter: blur(30px) saturate(180%);
-        border-bottom: 1px solid var(--border-glass);
-        padding: 0 28px;
-        height: 64px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .navbar::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60%;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-        opacity: 0.3;
-      }
-
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-        color: var(--text-primary);
-        transition: transform 0.3s ease;
-      }
-
-      .logo:hover {
-        transform: scale(1.02);
-      }
-
-      .logo-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 12px;
-        background: var(--gradient-1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        box-shadow: 0 4px 20px rgba(124, 109, 245, 0.4);
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-
-      .logo-icon .material-icons-round {
-        font-size: 20px;
-      }
-
-      .logo-icon::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.3),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .logo:hover .logo-icon::before {
-        opacity: 1;
-      }
-
-      .logo:hover .logo-icon {
-        transform: rotate(-5deg) scale(1.05);
-      }
-
-      .logo-text {
-        font-size: 1.1rem;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-      }
-
-      .logo-text span {
-        background: var(--gradient-1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      /* ─── Theme Toggle ─── */
-      .theme-toggle {
-        width: 42px;
-        height: 42px;
-        border-radius: var(--radius-xs);
-        background: var(--bg-glass);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--border-glass);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .theme-toggle:hover {
-        border-color: var(--border-glass-light);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-sm);
-      }
-
-      .theme-toggle .material-icons-round {
-        font-size: 20px;
-        color: var(--text-primary);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: absolute;
-      }
-
-      .theme-toggle .sun-icon {
-        opacity: 0;
-        transform: rotate(-90deg) scale(0.5);
-      }
-
-      .theme-toggle .moon-icon {
-        opacity: 1;
-        transform: rotate(0deg) scale(1);
-      }
-
-      [data-theme="light"] .theme-toggle .sun-icon {
-        opacity: 1;
-        transform: rotate(0deg) scale(1);
-      }
-
-      [data-theme="light"] .theme-toggle .moon-icon {
-        opacity: 0;
-        transform: rotate(90deg) scale(0.5);
-      }
-
-      .nav-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
-        border-radius: var(--radius-sm);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.85rem;
-        background: var(--bg-glass);
-        backdrop-filter: blur(20px);
-        color: var(--text-primary);
-        border: 1px solid var(--border-glass);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .nav-btn::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--gradient-1);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .nav-btn:hover {
-        border-color: var(--border-glass-light);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-sm);
-      }
-
-      .nav-btn:hover::before {
-        opacity: 0.1;
-      }
-
-      .nav-btn .material-icons-round {
-        font-size: 18px;
-      }
-
-      .nav-btn .material-icons-round,
-      .nav-btn span {
-        position: relative;
-        z-index: 1;
-      }
-
-      /* ─── Main Content ─── */
-      .main {
-        max-width: 920px;
-        margin: 32px auto;
-        padding: 0 20px;
-        animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      /* ─── Player Card ─── */
-      .player-card {
-        background: var(--bg-glass);
-        border: 1px solid var(--border-glass);
-        border-radius: var(--radius);
-        overflow: hidden;
-        backdrop-filter: blur(50px) saturate(180%);
-        -webkit-backdrop-filter: blur(50px) saturate(180%);
-        position: relative;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow:
-          var(--shadow-md),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      }
-
-      .player-card::before {
-        content: "";
-        position: absolute;
-        inset: -1px;
-        border-radius: var(--radius);
-        padding: 1px;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.12),
-          transparent 40%,
-          rgba(124, 109, 245, 0.1)
-        );
-        -webkit-mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        mask:
-          linear-gradient(#fff 0 0) content-box,
-          linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        pointer-events: none;
-      }
-
-      .player-card:hover {
-        transform: translateY(-4px);
-        box-shadow:
-          var(--shadow-lg),
-          0 0 40px rgba(124, 109, 245, 0.1),
-          inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        border-color: var(--border-glass-light);
-      }
-
-      .player-wrapper {
-        width: 100%;
-        background: linear-gradient(
-          180deg,
-          rgba(0, 0, 0, 0.6) 0%,
-          rgba(0, 0, 0, 0.9) 100%
-        );
-        position: relative;
-        transition: background 0.4s ease;
-      }
-
-      .player-wrapper video,
-      .player-wrapper audio {
-        width: 100%;
-        display: block;
-      }
-
-      .player-wrapper.audio-mode {
-        padding: 60px 32px;
-        background: linear-gradient(
-          135deg,
-          rgba(20, 20, 35, 0.8),
-          rgba(30, 20, 50, 0.8)
-        );
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .player-wrapper.audio-mode::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-          circle at center,
-          rgba(124, 109, 245, 0.15) 0%,
-          transparent 70%
-        );
-        animation: pulse-glow 4s ease-in-out infinite;
-      }
-
-      /* Plyr overrides */
-      .plyr {
-        --plyr-color-main: var(--accent);
-        --plyr-video-background: transparent;
-      }
-
-      .plyr--video {
-        border-radius: 0;
-      }
-
-      .plyr__control--overlaid {
-        background: var(--gradient-1) !important;
-        box-shadow: 0 8px 32px var(--accent-glow);
-        transition: all 0.3s ease !important;
-      }
-
-      .plyr__control--overlaid:hover {
-        transform: scale(1.1);
-        box-shadow: 0 12px 48px var(--accent-glow);
-      }
-
-      /* ─── File Info ─── */
-      .file-info {
-        padding: 24px 28px;
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        position: relative;
-      }
-
-      .file-info::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 28px;
-        right: 28px;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--border-glass-light),
-          transparent
-        );
-      }
-
-      .file-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
-        background: var(--gradient-1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        color: #fff;
-        box-shadow: 0 8px 24px rgba(124, 109, 245, 0.35);
-        position: relative;
-        overflow: hidden;
-        animation: pulse-glow 3s ease-in-out infinite;
-      }
-
-      .file-icon .material-icons-round {
-        font-size: 26px;
-      }
-
-      .file-icon::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-          45deg,
-          transparent,
-          rgba(255, 255, 255, 0.2),
-          transparent
-        );
-        animation: shimmer 3s infinite;
-      }
-
-      .file-details {
-        flex: 1;
-        min-width: 0;
-      }
-
-      .file-name {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-bottom: 6px;
-      }
-
-      .file-meta {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.82rem;
-        color: var(--text-secondary);
-      }
-
-      .file-meta .material-icons-outlined,
-      .file-meta .material-icons-round {
-        color: var(--accent);
-        vertical-align: middle;
-      }
-
-      .meta-sep {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--accent);
-        opacity: 0.5;
-      }
-
-      .meta-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 3px 8px;
-        border-radius: 6px;
-        background: var(--bg-glass);
-        border: 1px solid var(--border-glass);
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      /* ─── Action Buttons ─── */
-      .actions {
-        padding: 0 28px 28px;
-        display: flex;
-        gap: 14px;
-      }
-
-      /* Download Button - Liquid Glass Style */
-      .btn-download {
-        --btn-bg: var(--bg-glass);
-        --btn-bg-hover: var(--bg-glass-hover);
-        --btn-border: var(--border-glass);
-        --btn-text: var(--text-primary);
-        --btn-icon-bg: var(--accent);
-        position: relative;
-        height: 58px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        border: 1px solid var(--btn-border);
-        background: var(--btn-bg);
-        backdrop-filter: blur(30px) saturate(180%);
-        -webkit-backdrop-filter: blur(30px) saturate(180%);
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-        flex: 1;
-        text-decoration: none;
-        box-shadow:
-          var(--shadow-sm),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .btn-download::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .btn-download:hover::before {
-        opacity: 1;
-      }
-
-      .btn-download,
-      .btn-download__icon,
-      .btn-download__text {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .btn-download .btn-download__text {
-        transform: translateX(28px);
-        color: var(--btn-text);
-        font-weight: 600;
-        font-size: 0.95rem;
-        letter-spacing: -0.3px;
-        white-space: nowrap;
-      }
-
-      .btn-download .btn-download__icon {
-        position: absolute;
-        right: 4px;
-        height: calc(100% - 8px);
-        width: 50px;
-        background: var(--gradient-1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-xs);
-        box-shadow: 0 4px 16px var(--accent-glow);
-      }
-
-      .btn-download .btn-download__icon .material-icons-round {
-        font-size: 24px;
-        color: #fff;
-      }
-
-      .btn-download:hover {
-        border-color: var(--accent);
-        box-shadow:
-          var(--shadow-md),
-          0 0 30px var(--accent-glow);
-        transform: translateY(-2px);
-      }
-
-      .btn-download:hover .btn-download__text {
-        color: transparent;
-      }
-
-      .btn-download:hover .btn-download__icon {
-        width: calc(100% - 8px);
-        right: 4px;
-      }
-
-      .btn-download:active {
-        transform: translateY(0);
-        box-shadow: var(--shadow-sm);
-      }
-
-      /* Ghost Button - Liquid Glass */
-      .btn-ghost {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 14px 28px;
-        height: 52px;
-        border-radius: var(--radius-sm);
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.9rem;
-        background: var(--bg-glass);
-        backdrop-filter: blur(30px) saturate(180%);
-        -webkit-backdrop-filter: blur(30px) saturate(180%);
-        color: var(--text-primary);
-        border: 1px solid var(--border-glass);
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        box-shadow:
-          var(--shadow-sm),
-          inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .btn-ghost::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.1),
-          transparent
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .btn-ghost:hover::before {
-        opacity: 1;
-      }
-
-      .btn-ghost .material-icons-round {
-        font-size: 20px;
-        transition: transform 0.3s ease;
-      }
-
-      .btn-ghost span {
-        position: relative;
-        z-index: 1;
-      }
-
-      .btn-ghost:hover {
-        border-color: var(--accent);
-        transform: translateY(-2px);
-        box-shadow:
-          var(--shadow-md),
-          0 0 20px rgba(124, 109, 245, 0.15);
-      }
-
-      .btn-ghost:hover .material-icons-round {
-        transform: scale(1.1);
-      }
-
-      .btn-ghost:active {
-        transform: translateY(0);
-      }
-
-      /* ─── Stats Bar ─── */
-      .stats-bar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 32px;
-        padding: 20px;
-        margin-top: 24px;
-        background: var(--bg-glass);
-        border: 1px solid var(--border-glass);
-        border-radius: var(--radius-sm);
-        backdrop-filter: blur(30px);
-      }
-
-      .stat-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-      }
-
-      .stat-value {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        background: var(--gradient-1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      .stat-label {
-        font-size: 0.72rem;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .stat-divider {
-        width: 1px;
-        height: 32px;
-        background: var(--border-glass);
-      }
-
-      /* ─── Footer ─── */
-      .footer {
-        text-align: center;
-        padding: 32px 16px;
-        font-size: 0.78rem;
-        color: var(--text-secondary);
-        animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
-      }
-
-      .footer a {
-        color: var(--accent);
-        text-decoration: none;
-        transition: all 0.3s ease;
-        position: relative;
-      }
-
-      .footer a::after {
-        content: "";
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 1px;
-        background: var(--gradient-1);
-        transition: width 0.3s ease;
-      }
-
-      .footer a:hover {
-        color: var(--accent-secondary);
-      }
-
-      .footer a:hover::after {
-        width: 100%;
-      }
-
-      .footer-brand {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 8px;
-      }
-
-      .footer-brand i {
-        color: var(--accent);
-      }
-
-      /* ─── Mobile ─── */
-      @media (max-width: 640px) {
-        .navbar {
-          padding: 0 16px;
-          height: 56px;
-        }
-
-        .logo-icon {
-          width: 34px;
-          height: 34px;
-        }
-
-        .logo-text {
-          font-size: 0.95rem;
-        }
-
-        .nav-actions {
-          gap: 8px;
-        }
-
-        .theme-toggle {
-          width: 38px;
-          height: 38px;
-        }
-
-        .nav-btn {
-          padding: 8px 14px;
-          font-size: 0.8rem;
-        }
-
-        .nav-btn span {
-          display: none;
-        }
-
-        .main {
-          margin: 20px auto;
-          padding: 0 12px;
-        }
-
-        .player-card {
-          border-radius: 25px;
-        }
-
-        .file-info {
-          padding: 20px;
-          gap: 14px;
-        }
-
-        .file-icon {
-          width: 46px;
-          height: 46px;
-          font-size: 1.2rem;
-        }
-
-        .file-name {
-          font-size: 0.92rem;
-        }
-
-        .actions {
-          padding: 0 20px 20px;
-          gap: 10px;
-          flex-direction: column;
-        }
-
-        .btn-download {
-          height: 57px;
-          justify-content: center;
-        }
-
-        .btn-download .btn-download__text {
-          transform: translateX(0);
-          text-align: center;
-          flex: 1;
-          padding-left: 20px;
-          font-size: 0.92rem;
-        }
-
-        .btn-download .btn-download__icon {
-          position: relative;
-          right: auto;
-          width: 48px;
-          height: calc(100% - 8px);
-          margin: 4px;
-          flex-shrink: 0;
-        }
-
-        .btn-download:hover .btn-download__text {
-          color: var(--btn-text);
-        }
-
-        .btn-download:hover .btn-download__icon {
-          width: 48px;
-        }
-
-        .btn-ghost {
-          height: 56px;
-        }
-
-        .btn {
-          padding: 14px 20px;
-          font-size: 0.88rem;
-        }
-
-        .stats-bar {
-          gap: 20px;
-          padding: 16px;
-        }
-
-        .stat-value {
-          font-size: 1rem;
-        }
-
-        .loaders-container {
-          gap: 16px;
-        }
-
-        .loader {
-          width: 36px;
-          height: 36px;
-        }
-
-        .loader.triangle {
-          width: 40px;
-        }
-
-        .orb-1 {
-          width: 300px;
-          height: 300px;
-        }
-        .orb-2 {
-          width: 250px;
-          height: 250px;
-        }
-        .orb-3 {
-          width: 200px;
-          height: 200px;
-        }
-      }
-
-      /* ─── Reduced Motion ─── */
-      @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
         *::after {
-          animation-duration: 0.01ms !important;
-          animation-iteration-count: 1 !important;
-          transition-duration: 0.01ms !important;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
-    </style>
-  </head>
 
-  <body>
+        :root {
+            --bg-primary: #0a0a12;
+            --bg-secondary: #12121a;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-hover: rgba(255, 255, 255, 0.06);
+            --bg-nav: rgba(15, 15, 25, 0.6);
+            --bg-loader: rgba(10, 10, 18, 0.95);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glass-light: rgba(255, 255, 255, 0.12);
+            --text-primary: #f5f5fa;
+            --text-secondary: #8b8b9e;
+            --text-muted: #5a5a6e;
+            --accent: #7c6df5;
+            --accent-secondary: #c084fc;
+            --accent-pink: #f472b6;
+            --accent-glow: rgba(124, 109, 245, 0.4);
+            --gradient-1: linear-gradient(135deg,
+                    #7c6df5 0%,
+                    #c084fc 50%,
+                    #f472b6 100%);
+            --gradient-glass: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    rgba(255, 255, 255, 0.02) 100%);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.4);
+            --radius: 24px;
+            --radius-sm: 14px;
+            --radius-xs: 10px;
+            --loader-path: #2a2a3a;
+            --loader-dot: #7c6df5;
+        }
+
+        /* ─── Light Theme ─── */
+        [data-theme="light"] {
+            --bg-primary: #f8f9fc;
+            --bg-secondary: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --bg-glass-hover: rgba(255, 255, 255, 0.85);
+            --bg-nav: rgba(255, 255, 255, 0.8);
+            --bg-loader: rgba(248, 249, 252, 0.98);
+            --border-glass: rgba(0, 0, 0, 0.06);
+            --border-glass-light: rgba(0, 0, 0, 0.1);
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a7a;
+            --text-muted: #8a8aa0;
+            --accent-glow: rgba(124, 109, 245, 0.25);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --loader-path: #d0d0e0;
+            --loader-dot: #7c6df5;
+        }
+
+        [data-theme="light"] .bg-orbs {
+            filter: blur(100px);
+            opacity: 0.5;
+        }
+
+        [data-theme="light"] .orb-1 {
+            background: radial-gradient(circle,
+                    rgba(124, 109, 245, 0.2) 0%,
+                    transparent 70%);
+        }
+
+        [data-theme="light"] .orb-2 {
+            background: radial-gradient(circle,
+                    rgba(192, 132, 252, 0.15) 0%,
+                    transparent 70%);
+        }
+
+        [data-theme="light"] .orb-3 {
+            background: radial-gradient(circle,
+                    rgba(244, 114, 182, 0.15) 0%,
+                    transparent 70%);
+        }
+
+        [data-theme="light"] .player-wrapper {
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.02) 0%,
+                    rgba(0, 0, 0, 0.05) 100%);
+        }
+
+        [data-theme="light"] .player-card {
+            box-shadow:
+                var(--shadow-md),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        body {
+            font-family:
+                "Inter",
+                system-ui,
+                -apple-system,
+                sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition:
+                background 0.4s ease,
+                color 0.4s ease;
+        }
+
+        /* ─── Loading Screen ─── */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-loader);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            transition:
+                opacity 0.5s ease,
+                visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loaders-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .loader {
+            --path: var(--loader-path);
+            --dot: var(--loader-dot);
+            --duration: 3s;
+            width: 44px;
+            height: 44px;
+            position: relative;
+        }
+
+        .loader:before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            position: absolute;
+            display: block;
+            background: var(--dot);
+            top: 37px;
+            left: 19px;
+            transform: translate(-18px, -18px);
+            animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+        }
+
+        .loader svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .loader svg rect,
+        .loader svg polygon,
+        .loader svg circle {
+            fill: none;
+            stroke: var(--path);
+            stroke-width: 10px;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+        }
+
+        .loader svg polygon {
+            stroke-dasharray: 145 76 145 76;
+            stroke-dashoffset: 0;
+            animation: pathTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+        }
+
+        .loader svg rect {
+            stroke-dasharray: 192 64 192 64;
+            stroke-dashoffset: 0;
+            animation: pathRect 3s cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+        }
+
+        .loader svg circle {
+            stroke-dasharray: 150 50 150 50;
+            stroke-dashoffset: 75;
+            animation: pathCircle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+        }
+
+        .loader.triangle {
+            width: 48px;
+        }
+
+        .loader.triangle:before {
+            left: 21px;
+            transform: translate(-10px, -18px);
+            animation: dotTriangle var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+        }
+
+        @keyframes pathTriangle {
+            33% {
+                stroke-dashoffset: 74;
+            }
+
+            66% {
+                stroke-dashoffset: 147;
+            }
+
+            100% {
+                stroke-dashoffset: 221;
+            }
+        }
+
+        @keyframes dotTriangle {
+            33% {
+                transform: translate(0, 0);
+            }
+
+            66% {
+                transform: translate(10px, -18px);
+            }
+
+            100% {
+                transform: translate(-10px, -18px);
+            }
+        }
+
+        @keyframes pathRect {
+            25% {
+                stroke-dashoffset: 64;
+            }
+
+            50% {
+                stroke-dashoffset: 128;
+            }
+
+            75% {
+                stroke-dashoffset: 192;
+            }
+
+            100% {
+                stroke-dashoffset: 256;
+            }
+        }
+
+        @keyframes dotRect {
+            25% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(18px, -18px);
+            }
+
+            75% {
+                transform: translate(0, -36px);
+            }
+
+            100% {
+                transform: translate(-18px, -18px);
+            }
+        }
+
+        @keyframes pathCircle {
+            25% {
+                stroke-dashoffset: 125;
+            }
+
+            50% {
+                stroke-dashoffset: 175;
+            }
+
+            75% {
+                stroke-dashoffset: 225;
+            }
+
+            100% {
+                stroke-dashoffset: 275;
+            }
+        }
+
+        .loading-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .loading-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .loading-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 3px;
+            background: var(--border-glass);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 10px;
+            animation: loadingProgress 6s ease-in-out forwards;
+        }
+
+        @keyframes loadingProgress {
+            0% {
+                width: 0%;
+            }
+
+            20% {
+                width: 25%;
+            }
+
+            40% {
+                width: 45%;
+            }
+
+            60% {
+                width: 65%;
+            }
+
+            80% {
+                width: 85%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* ─── Animated Background Orbs ─── */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -1;
+            filter: blur(80px);
+            transition:
+                filter 0.4s ease,
+                opacity 0.4s ease;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle,
+                    rgba(124, 109, 245, 0.3) 0%,
+                    transparent 70%);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle,
+                    rgba(192, 132, 252, 0.25) 0%,
+                    transparent 70%);
+            top: 50%;
+            right: -5%;
+            animation-delay: -7s;
+            animation-duration: 25s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle,
+                    rgba(244, 114, 182, 0.2) 0%,
+                    transparent 70%);
+            bottom: -5%;
+            left: 30%;
+            animation-delay: -14s;
+            animation-duration: 22s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(30px, -30px) scale(1.05);
+            }
+
+            50% {
+                transform: translate(-20px, 20px) scale(0.95);
+            }
+
+            75% {
+                transform: translate(20px, 10px) scale(1.02);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow:
+                    0 0 20px var(--accent-glow),
+                    0 8px 32px rgba(124, 109, 245, 0.2);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 40px var(--accent-glow),
+                    0 12px 48px rgba(124, 109, 245, 0.3);
+            }
+        }
+
+        /* ─── Navbar ─── */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--bg-nav);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 0 28px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navbar::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--accent),
+                    transparent);
+            opacity: 0.3;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(124, 109, 245, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .logo-icon .material-icons-round {
+            font-size: 20px;
+        }
+
+        .logo-icon::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.3),
+                    transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo:hover .logo-icon::before {
+            opacity: 1;
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(-5deg) scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ─── Theme Toggle ─── */
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-xs);
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--border-glass-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .theme-toggle .material-icons-round {
+            font-size: 20px;
+            color: var(--text-primary);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute;
+        }
+
+        .theme-toggle .sun-icon {
+            opacity: 0;
+            transform: rotate(-90deg) scale(0.5);
+        }
+
+        .theme-toggle .moon-icon {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        [data-theme="light"] .theme-toggle .sun-icon {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+
+        [data-theme="light"] .theme-toggle .moon-icon {
+            opacity: 0;
+            transform: rotate(90deg) scale(0.5);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            border: 1px solid var(--border-glass);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--border-glass-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-btn:hover::before {
+            opacity: 0.1;
+        }
+
+        .nav-btn .material-icons-round {
+            font-size: 18px;
+        }
+
+        .nav-btn .material-icons-round,
+        .nav-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── Main Content ─── */
+        .main {
+            max-width: 920px;
+            margin: 32px auto;
+            padding: 0 20px;
+            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ─── Player Card ─── */
+        .player-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            overflow: hidden;
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                var(--shadow-md),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .player-card::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius);
+            padding: 1px;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.12),
+                    transparent 40%,
+                    rgba(124, 109, 245, 0.1));
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .player-card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                var(--shadow-lg),
+                0 0 40px rgba(124, 109, 245, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            border-color: var(--border-glass-light);
+        }
+
+        .player-wrapper {
+            width: 100%;
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.6) 0%,
+                    rgba(0, 0, 0, 0.9) 100%);
+            position: relative;
+            transition: background 0.4s ease;
+            aspect-ratio: 16 / 9;
+            max-height: 75vh;
+            overflow: hidden;
+        }
+
+        .player-wrapper video,
+        .player-wrapper audio {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .player-wrapper.audio-mode {
+            padding: 60px 32px;
+            background: linear-gradient(135deg,
+                    rgba(20, 20, 35, 0.8),
+                    rgba(30, 20, 50, 0.8));
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-wrapper.audio-mode::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center,
+                    rgba(124, 109, 245, 0.15) 0%,
+                    transparent 70%);
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+
+        /* Plyr overrides */
+        .plyr {
+            --plyr-color-main: var(--accent);
+            --plyr-video-background: transparent;
+        }
+
+        .plyr--video {
+            border-radius: 0;
+        }
+
+        .plyr__control--overlaid {
+            background: var(--gradient-1) !important;
+            box-shadow: 0 8px 32px var(--accent-glow);
+            transition: all 0.3s ease !important;
+        }
+
+        .plyr__control--overlaid:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 48px var(--accent-glow);
+        }
+
+        /* Make Plyr fill the wrapper */
+        .plyr--video {
+            height: 100%;
+        }
+
+        .plyr--video .plyr__video-wrapper {
+            height: 100%;
+        }
+
+        /* ─── File Info ─── */
+        .file-info {
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+        }
+
+        .file-info::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 28px;
+            right: 28px;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--border-glass-light),
+                    transparent);
+        }
+
+        .file-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(124, 109, 245, 0.35);
+            position: relative;
+            overflow: hidden;
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .file-icon .material-icons-round {
+            font-size: 26px;
+        }
+
+        .file-icon::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .file-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 6px;
+        }
+
+        .file-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .file-meta .material-icons-outlined,
+        .file-meta .material-icons-round {
+            color: var(--accent);
+            vertical-align: middle;
+        }
+
+        .meta-sep {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.5;
+        }
+
+        .meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ─── Action Buttons ─── */
+        .actions {
+            padding: 0 28px 28px;
+            display: flex;
+            gap: 14px;
+        }
+
+        /* Download Button - Liquid Glass Style */
+        .btn-download {
+            --btn-bg: var(--bg-glass);
+            --btn-bg-hover: var(--bg-glass-hover);
+            --btn-border: var(--border-glass);
+            --btn-text: var(--text-primary);
+            --btn-icon-bg: var(--accent);
+            position: relative;
+            height: 58px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--btn-border);
+            background: var(--btn-bg);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            flex: 1;
+            text-decoration: none;
+            box-shadow:
+                var(--shadow-sm),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-download::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.1),
+                    transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-download:hover::before {
+            opacity: 1;
+        }
+
+        .btn-download,
+        .btn-download__icon,
+        .btn-download__text {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-download .btn-download__text {
+            transform: translateX(28px);
+            color: var(--btn-text);
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+        }
+
+        .btn-download .btn-download__icon {
+            position: absolute;
+            right: 4px;
+            height: calc(100% - 8px);
+            width: 50px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-xs);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .btn-download .btn-download__icon .material-icons-round {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .btn-download:hover {
+            border-color: var(--accent);
+            box-shadow:
+                var(--shadow-md),
+                0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-download:hover .btn-download__text {
+            color: transparent;
+        }
+
+        .btn-download:hover .btn-download__icon {
+            width: calc(100% - 8px);
+            right: 4px;
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Ghost Button - Liquid Glass */
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            height: 52px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            color: var(--text-primary);
+            border: 1px solid var(--border-glass);
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow:
+                var(--shadow-sm),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-ghost::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.1),
+                    transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-ghost:hover::before {
+            opacity: 1;
+        }
+
+        .btn-ghost .material-icons-round {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-ghost span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow:
+                var(--shadow-md),
+                0 0 20px rgba(124, 109, 245, 0.15);
+        }
+
+        .btn-ghost:hover .material-icons-round {
+            transform: scale(1.1);
+        }
+
+        .btn-ghost:active {
+            transform: translateY(0);
+        }
+
+        /* ─── Stats Bar ─── */
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            padding: 20px;
+            margin-top: 24px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            backdrop-filter: blur(30px);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            height: 32px;
+            background: var(--border-glass);
+        }
+
+        /* ─── Footer ─── */
+        .footer {
+            text-align: center;
+            padding: 32px 16px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .footer a::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gradient-1);
+            transition: width 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--accent-secondary);
+        }
+
+        .footer a:hover::after {
+            width: 100%;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .footer-brand i {
+            color: var(--accent);
+        }
+
+        /* ─── Mobile ─── */
+        @media (max-width: 640px) {
+            .navbar {
+                padding: 0 16px;
+                height: 56px;
+            }
+
+            .logo-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .logo-text {
+                font-size: 0.95rem;
+            }
+
+            .nav-actions {
+                gap: 8px;
+            }
+
+            .theme-toggle {
+                width: 38px;
+                height: 38px;
+            }
+
+            .nav-btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+
+            .main {
+                margin: 20px auto;
+                padding: 0 12px;
+            }
+
+            .player-card {
+                border-radius: 20px;
+            }
+
+            .player-wrapper {
+                max-height: 55vh;
+            }
+
+            .file-info {
+                padding: 20px;
+                gap: 14px;
+            }
+
+            .file-icon {
+                width: 46px;
+                height: 46px;
+                font-size: 1.2rem;
+            }
+
+            .file-name {
+                font-size: 0.92rem;
+            }
+
+            .actions {
+                padding: 0 20px 20px;
+                gap: 10px;
+                flex-direction: column;
+            }
+
+            .btn-download {
+                height: 57px;
+                justify-content: center;
+            }
+
+            .btn-download .btn-download__text {
+                transform: translateX(0);
+                text-align: center;
+                flex: 1;
+                padding-left: 20px;
+                font-size: 0.92rem;
+            }
+
+            .btn-download .btn-download__icon {
+                position: relative;
+                right: auto;
+                width: 48px;
+                height: calc(100% - 8px);
+                margin: 4px;
+                flex-shrink: 0;
+            }
+
+            .btn-download:hover .btn-download__text {
+                color: var(--btn-text);
+            }
+
+            .btn-download:hover .btn-download__icon {
+                width: 48px;
+            }
+
+            .btn-ghost {
+                height: 56px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 0.88rem;
+            }
+
+            .stats-bar {
+                gap: 20px;
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
+            .loaders-container {
+                gap: 16px;
+            }
+
+            .loader {
+                width: 36px;
+                height: 36px;
+            }
+
+            .loader.triangle {
+                width: 40px;
+            }
+
+            .orb-1 {
+                width: 300px;
+                height: 300px;
+            }
+
+            .orb-2 {
+                width: 250px;
+                height: 250px;
+            }
+
+            .orb-3 {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        /* ─── Reduced Motion ─── */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-      <div class="loaders-container">
-        <div class="loader">
-          <svg viewBox="0 0 80 80">
-            <circle r="32" cy="40" cx="40"></circle>
-          </svg>
+        <div class="loaders-container">
+            <div class="loader">
+                <svg viewBox="0 0 80 80">
+                    <circle r="32" cy="40" cx="40"></circle>
+                </svg>
+            </div>
+            <div class="loader triangle">
+                <svg viewBox="0 0 86 80">
+                    <polygon points="43 8 79 72 7 72"></polygon>
+                </svg>
+            </div>
+            <div class="loader">
+                <svg viewBox="0 0 80 80">
+                    <rect height="64" width="64" y="8" x="8"></rect>
+                </svg>
+            </div>
         </div>
-        <div class="loader triangle">
-          <svg viewBox="0 0 86 80">
-            <polygon points="43 8 79 72 7 72"></polygon>
-          </svg>
+        <div class="loading-text">
+            <div class="loading-title">Preparing Your Media</div>
+            <div class="loading-subtitle">
+                Please wait while we load your content...
+            </div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
         </div>
-        <div class="loader">
-          <svg viewBox="0 0 80 80">
-            <rect height="64" width="64" y="8" x="8"></rect>
-          </svg>
-        </div>
-      </div>
-      <div class="loading-text">
-        <div class="loading-title">Preparing Your Media</div>
-        <div class="loading-subtitle">
-          Please wait while we load your content...
-        </div>
-        <div class="loading-progress">
-          <div class="loading-progress-bar"></div>
-        </div>
-      </div>
     </div>
 
     <!-- Animated Background Orbs -->
     <div class="bg-orbs">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
 
     <!-- Navbar -->
     <nav class="navbar">
-      <a href="https://t.me/PikaFileToLinkBot" class="logo">
-        <div class="logo-icon">
-          <span class="material-icons-round">link</span>
-        </div>
-        <div class="logo-text"><span>FileToLink</span>Bot</div>
-      </a>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-          <span class="material-icons-round sun-icon">light_mode</span>
-          <span class="material-icons-round moon-icon">dark_mode</span>
-        </button>
-        <a
-          href="https://t.me/PikaFileToLinkBot"
-          class="nav-btn"
-          target="_blank"
-        >
-          <span class="material-icons-round">send</span> <span>Open Bot</span>
+        <a href="https://t.me/PikaFileToLinkBot" class="logo">
+            <div class="logo-icon">
+                <span class="material-icons-round">link</span>
+            </div>
+            <div class="logo-text"><span>FileToLink</span>Bot</div>
         </a>
-      </div>
+        <div class="nav-actions">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="material-icons-round sun-icon">light_mode</span>
+                <span class="material-icons-round moon-icon">dark_mode</span>
+            </button>
+            <a href="https://t.me/PikaFileToLinkBot" class="nav-btn" target="_blank">
+                <span class="material-icons-round">send</span> <span>Open Bot</span>
+            </a>
+        </div>
     </nav>
 
     <!-- Main -->
     <main class="main">
-      <div class="player-card">
-        <div class="player-wrapper" id="playerWrapper">
-          {% if file_url.split('.')[-1].split('?')[0] in ['mp3', 'wav', 'flac',
-          'ogg', 'aac', 'm4a'] or 'audio' in file_url %}
-          <audio id="player" controls>
-            <source src="{{ file_url }}" type="audio/mpeg" />
-            Your browser does not support audio playback.
-          </audio>
-          {% else %}
-          <video id="player" controls crossorigin playsinline>
-            <source src="{{ file_url }}" />
-            Your browser does not support video playback.
-          </video>
-          {% endif %}
-        </div>
-
-        <div class="file-info">
-          <div class="file-icon">
-            <span class="material-icons-round">play_circle</span>
-          </div>
-          <div class="file-details">
-            <div class="file-name">{{ file_name }}</div>
-            <div class="file-meta">
-              <span class="material-icons-outlined" style="font-size: 16px"
-                >storage</span
-              >
-              {{ file_size }}
-              <span class="meta-sep"></span>
-              <span class="meta-badge"
-                ><span class="material-icons-round" style="font-size: 12px"
-                  >verified_user</span
-                >
-                Secure</span
-              >
+        <div class="player-card">
+            <div class="player-wrapper" id="playerWrapper">
+                {% if file_url.split('.')[-1].split('?')[0] in ['mp3', 'wav', 'flac',
+                'ogg', 'aac', 'm4a'] or 'audio' in file_url %}
+                <audio id="player" controls>
+                    <source src="{{ file_url }}" type="audio/mpeg" />
+                    Your browser does not support audio playback.
+                </audio>
+                {% else %}
+                <video id="player" controls crossorigin playsinline>
+                    <source src="{{ file_url }}" />
+                    Your browser does not support video playback.
+                </video>
+                {% endif %}
             </div>
-          </div>
+
+            <div class="file-info">
+                <div class="file-icon">
+                    <span class="material-icons-round">play_circle</span>
+                </div>
+                <div class="file-details">
+                    <div class="file-name">{{ file_name }}</div>
+                    <div class="file-meta">
+                        <span class="material-icons-outlined" style="font-size: 16px">storage</span>
+                        {{ file_size }}
+                        <span class="meta-sep"></span>
+                        <span class="meta-badge"><span class="material-icons-round"
+                                style="font-size: 12px">verified_user</span>
+                            Secure</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{{ file_url }}" class="btn-download" download>
+                    <span class="btn-download__text">Download File</span>
+                    <span class="btn-download__icon">
+                        <span class="material-icons-round">download</span>
+                    </span>
+                </a>
+                <a href="https://t.me/PikaFileToLinkBot" class="btn-ghost" target="_blank">
+                    <span class="material-icons-round">send</span>
+                    <span>Open Bot</span>
+                </a>
+            </div>
         </div>
 
-        <div class="actions">
-          <a href="{{ file_url }}" class="btn-download" download>
-            <span class="btn-download__text">Download File</span>
-            <span class="btn-download__icon">
-              <span class="material-icons-round">download</span>
-            </span>
-          </a>
-          <a
-            href="https://t.me/PikaFileToLinkBot"
-            class="btn-ghost"
-            target="_blank"
-          >
-            <span class="material-icons-round">send</span>
-            <span>Open Bot</span>
-          </a>
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">HD</div>
+                <div class="stat-label">Quality</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-value">Fast</div>
+                <div class="stat-label">Streaming</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <div class="stat-value">Free</div>
+                <div class="stat-label">Forever</div>
+            </div>
         </div>
-      </div>
-
-      <!-- Stats Bar -->
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value">HD</div>
-          <div class="stat-label">Quality</div>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-value">Fast</div>
-          <div class="stat-label">Streaming</div>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <div class="stat-value">Free</div>
-          <div class="stat-label">Forever</div>
-        </div>
-      </div>
     </main>
 
     <div class="footer">
-      <div>
-        Crafted with
-        <span
-          class="material-icons-round"
-          style="
+        <div>
+            Crafted with
+            <span class="material-icons-round" style="
             color: var(--accent-pink);
             font-size: 14px;
             vertical-align: middle;
-          "
-          >favorite</span
-        >
-        by
-        <a href="https://t.me/listkiss">Shahadat Hassan</a>
-      </div>
-      <div class="footer-brand">
-        <span class="material-icons-round" style="font-size: 14px">link</span>
-        FileToLink v3.0 — Premium Media Streaming
-      </div>
+          ">favorite</span>
+            by
+            <a href="https://t.me/listkiss">Shahadat Hassan</a>
+        </div>
+        <div class="footer-brand">
+            <span class="material-icons-round" style="font-size: 14px">link</span>
+            FileToLink v3.0 — Premium Media Streaming
+        </div>
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script>
-      // Theme Toggle
-      const themeToggle = document.getElementById("themeToggle");
-      const html = document.documentElement;
+        // Theme Toggle
+        const themeToggle = document.getElementById("themeToggle");
+        const html = document.documentElement;
 
-      // Check for saved theme preference or default to dark
-      const savedTheme = localStorage.getItem("theme") || "dark";
-      html.setAttribute("data-theme", savedTheme);
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        html.setAttribute("data-theme", savedTheme);
 
-      themeToggle.addEventListener("click", () => {
-        const currentTheme = html.getAttribute("data-theme");
-        const newTheme = currentTheme === "dark" ? "light" : "dark";
-        html.setAttribute("data-theme", newTheme);
-        localStorage.setItem("theme", newTheme);
-      });
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+        });
 
-      // Loading Screen
-      const loadingScreen = document.getElementById("loadingScreen");
-      const mediaElement =
-        document.querySelector("video") || document.querySelector("audio");
+        // Loading Screen
+        const loadingScreen = document.getElementById("loadingScreen");
+        const mediaElement =
+            document.querySelector("video") || document.querySelector("audio");
 
-      // Hide loading screen when media is ready or after timeout
-      let loadingHidden = false;
+        // Hide loading screen when media is ready or after timeout
+        let loadingHidden = false;
 
-      const hideLoading = () => {
-        if (!loadingHidden) {
-          loadingHidden = true;
-          loadingScreen.classList.add("hidden");
+        const hideLoading = () => {
+            if (!loadingHidden) {
+                loadingHidden = true;
+                loadingScreen.classList.add("hidden");
+            }
+        };
+
+        // Listen for media ready events
+        if (mediaElement) {
+            mediaElement.addEventListener("canplay", hideLoading);
+            mediaElement.addEventListener("loadeddata", hideLoading);
         }
-      };
 
-      // Listen for media ready events
-      if (mediaElement) {
-        mediaElement.addEventListener("canplay", hideLoading);
-        mediaElement.addEventListener("loadeddata", hideLoading);
-      }
+        // Fallback: hide after 6 seconds maximum
+        setTimeout(hideLoading, 6000);
 
-      // Fallback: hide after 6 seconds maximum
-      setTimeout(hideLoading, 6000);
+        // Initialize Plyr
+        const player = new Plyr("#player", {
+            controls: [
+                "play-large",
+                "play",
+                "progress",
+                "current-time",
+                "duration",
+                "mute",
+                "volume",
+                "settings",
+                "pip",
+                "fullscreen",
+            ],
+            settings: ["speed", "quality"],
+            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
+            keyboard: { focused: true, global: true },
+            tooltips: { controls: true, seek: true },
+        });
 
-      // Initialize Plyr
-      const player = new Plyr("#player", {
-        controls: [
-          "play-large",
-          "play",
-          "progress",
-          "current-time",
-          "duration",
-          "mute",
-          "volume",
-          "settings",
-          "pip",
-          "fullscreen",
-        ],
-        settings: ["speed", "quality"],
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
-        keyboard: { focused: true, global: true },
-        tooltips: { controls: true, seek: true },
-      });
+        // Add audio mode class if needed
+        if (document.querySelector("audio")) {
+            document.getElementById("playerWrapper").classList.add("audio-mode");
+        }
 
-      // Add audio mode class if needed
-      if (document.querySelector("audio")) {
-        document.getElementById("playerWrapper").classList.add("audio-mode");
-      }
-
-      // Keyboard shortcuts info
-      player.on("ready", () => {
-        console.log("🎬 FileToLink Player Ready");
-      });
+        // Keyboard shortcuts info
+        player.on("ready", () => {
+            console.log("🎬 FileToLink Player Ready");
+        });
     </script>
-  </body>
+</body>
+
 </html>
