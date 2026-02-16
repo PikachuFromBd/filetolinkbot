@@ -2,45 +2,47 @@
 
 
 class Text:
-    START_TXT = """<b>👋 𝗛𝗲𝗹𝗹𝗼 {}!</b>
+    START_TXT = """<b>🌟 ʜᴇʏ {}!</b>
 
-<b>✨ 𝗜'𝗺 <a href='https://t.me/{}'>{}</a>, 𝗮𝗻 𝗔𝗱𝘃𝗮𝗻𝗰𝗲𝗱 𝗙𝗶𝗹𝗲 𝘁𝗼 𝗟𝗶𝗻𝗸 𝗕𝗼𝘁! ✨</b>
+<b>⚡ ɪ'ᴍ <a href='https://t.me/{}'>{}</a></b>
+<b>ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ʙᴏᴛ!</b>
 
-🚀 <i>Send me any file and I'll generate instant stream & download links!</i>
+━━━━━━━━━━━━━━━━━━
+� <i>Send me any file and get instant</i>
+🖥 <i>Stream & Download links!</i>
+━━━━━━━━━━━━━━━━━━
 
-🔹 <b>𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿:</b> <a href='https://t.me/pikachufrombd'>@pikachufrombd</a>
+🔹 <b>ᴅᴇᴠᴇʟᴏᴘᴇʀ :</b> <a href='https://t.me/pikachufrombd'>@pikachufrombd</a>
+🔹 <b>ᴄʜᴀɴɴᴇʟ :</b> <a href='https://t.me/Team_SixtyNine'>@Team_SixtyNine</a>
 
-🎭 <b>Send me any media & witness the magic unfold! ✨</b>
-"""
+✨ <b>Send me any media & witness the magic!</b> ✨"""
 
-    LOG_TEXT = """<b>🚀 #𝗡𝗲𝘄𝗨𝘀𝗲𝗿</b>
+    LOG_TEXT = """<b>🚀 #NewUser</b>
 
 🆔 <b>ID :</b> <code>{}</code>
-👤 <b>Name :</b> <i>{}</i>
-"""
+👤 <b>Name :</b> <i>{}</i>"""
 
-    RESTART_TXT = """<b>🔄 𝗕𝗼𝘁 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗲𝗱! 🔄</b>
+    RESTART_TXT = """<b>🔄 Bot Restarted!</b>
 
 📅 <b>Date :</b> <code>{}</code>
 ⏰ <b>Time :</b> <code>{}</code>
 🌍 <b>Timezone :</b> <code>Asia/Dhaka</code>
 
-🛠️ <b>Build Status:</b> <code>🚀 v3.0.0 [ Client ]</code>
-"""
+🛠️ <b>Build :</b> <code>v3.0 [ Client ]</code>"""
 
-    LINK_TXT = """<i><u>𝗬𝗼𝘂𝗿 𝗟𝗶𝗻𝗸 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 !</u></i>
+    LINK_TXT = """<b>✅ ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ!</b>
 
-<b>📂 Fɪʟᴇ ɴᴀᴍᴇ :</b> <i>{file_name}</i>
+━━━━━━━━━━━━━━━━━━
+📂 <b>ɴᴀᴍᴇ :</b> <code>{file_name}</code>
+📦 <b>ꜱɪᴢᴇ :</b> <code>{file_size}</code>
+━━━━━━━━━━━━━━━━━━
 
-<b>📦 Fɪʟᴇ ꜱɪᴢᴇ :</b> <i>{file_size}</i>
+🖥 <b>ꜱᴛʀᴇᴀᴍ :</b> {stream}
+📥 <b>ᴅᴏᴡɴʟᴏᴀᴅ :</b> {download}
 
-<b>📥 Dᴏᴡɴʟᴏᴀᴅ :</b> <i>{download}</i>
-
-<b>🖥 Wᴀᴛᴄʜ :</b> <i>{stream}</i>
-
-<b>🚸 Nᴏᴛᴇ : ʟɪɴᴋ ᴡᴏɴ'ᴛ ᴇxᴘɪʀᴇ ᴛɪʟʟ ɪ ᴅᴇʟᴇᴛᴇ</b>"""
+⚠️ <i>ʟɪɴᴋ ᴡᴏɴ'ᴛ ᴇxᴘɪʀᴇ ᴛɪʟʟ ɪ ᴅᴇʟᴇᴛᴇ</i>"""
 
     LOG_FILE_TXT = """•• ʟɪɴᴋ ɢᴇɴᴇʀᴀᴛᴇᴅ ꜰᴏʀ ɪᴅ #{user_id}
 •• ᴜꜱᴇʀɴᴀᴍᴇ : {username}
 
-•• ᖴᎥᒪᗴ Nᗩᗰᗴ : {file_name}"""
+•• ꜰɪʟᴇ ɴᴀᴍᴇ : {file_name}"""
