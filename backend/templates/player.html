@@ -241,18 +241,15 @@
                     </audio>
                 </div>
                 {% else %}
-                <div style="position:relative;">
-                    <video id="player" class="player" src="{{ file_url }}" type="video/mp4" playsinline controls
-                        width="100%"></video>
-                    <div class="player"></div>
-                    <!-- Buffering Overlay -->
-                    <div class="buffer-overlay" id="bufferOverlay">
-                        <dotlottie-player
-                            src="https://lottie.host/5acbda8f-cf37-4592-badc-998cf8b93b3e/BJa7j6NowU.lottie"
-                            background="transparent" speed="1" loop autoplay>
-                        </dotlottie-player>
-                        <div class="buffer-text">Buffering...</div>
-                    </div>
+                <video id="player" class="player" src="{{ file_url }}" type="video/mp4" playsinline controls
+                    width="100%"></video>
+                <div class="player"></div>
+                <!-- Buffering Overlay -->
+                <div class="buffer-overlay" id="bufferOverlay">
+                    <dotlottie-player src="https://lottie.host/5acbda8f-cf37-4592-badc-998cf8b93b3e/BJa7j6NowU.lottie"
+                        background="transparent" speed="1" loop autoplay>
+                    </dotlottie-player>
+                    <div class="buffer-text">Buffering...</div>
                 </div>
                 {% endif %}
                 <div class="file-name">
