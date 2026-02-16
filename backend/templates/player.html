@@ -1,115 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ file_name }} — FileToLink</title>
+    <meta name="description" content="Stream {{ file_name }} — Powered by FileToLink">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f0f0f5;
+            --text-secondary: #8b8b9e;
+            --accent: #6c5ce7;
+            --accent-glow: rgba(108, 92, 231, 0.3);
+            --gradient-1: linear-gradient(135deg, #6c5ce7, #a855f7);
+            --gradient-2: linear-gradient(135deg, #0ea5e9, #6c5ce7);
+            --radius: 16px;
+        }
+
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #e0e0e0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
+            overflow-x: hidden;
         }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 50%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+            animation: bgShift 20s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes bgShift {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-5%, -5%) rotate(3deg);
+            }
+        }
+
         .container {
             width: 100%;
-            max-width: 900px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 860px;
+            animation: fadeUp 0.6s ease-out;
         }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Player Card */
+        .player-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            backdrop-filter: blur(40px);
+            box-shadow: 0 0 80px rgba(108, 92, 231, 0.05);
+        }
+
         .player-wrapper {
             width: 100%;
             background: #000;
             position: relative;
+            aspect-ratio: 16/9;
         }
-        video, audio {
+
+        .player-wrapper video,
+        .player-wrapper audio {
             width: 100%;
-            max-height: 500px;
+            height: 100%;
             display: block;
         }
-        .info {
+
+        .player-wrapper.audio-mode {
+            aspect-ratio: unset;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+        }
+
+        /* Plyr overrides */
+        .plyr--video {
+            border-radius: 0;
+        }
+
+        .plyr--full-ui input[type=range] {
+            color: var(--accent);
+        }
+
+        .plyr__control--overlaid {
+            background: var(--gradient-1);
+        }
+
+        .plyr__control--overlaid:hover {
+            background: var(--accent);
+        }
+
+        /* File Info */
+        .file-info {
             padding: 24px;
         }
-        .file-name {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 8px;
-            word-break: break-word;
-        }
-        .file-meta {
-            font-size: 0.9rem;
-            color: #aaa;
+
+        .file-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
             margin-bottom: 20px;
         }
-        .btn-group {
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--gradient-1);
             display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .file-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .file-meta {
+            display: flex;
+            align-items: center;
             gap: 12px;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+        }
+
+        /* Buttons */
+        .actions {
+            display: flex;
+            gap: 10px;
             flex-wrap: wrap;
         }
+
         .btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 12px 24px;
             border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+            flex: 1;
+            min-width: 140px;
         }
-        .btn-download {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+
+        .btn-primary {
+            background: var(--gradient-1);
             color: #fff;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
-        .btn-download:hover {
+
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 30px var(--accent-glow);
         }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
         .footer {
             text-align: center;
-            padding: 16px;
-            font-size: 0.8rem;
-            color: #666;
+            padding: 20px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
         }
-        .footer a { color: #667eea; text-decoration: none; }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            .file-info {
+                padding: 16px;
+            }
+
+            .file-name {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 11px 18px;
+                font-size: 0.85rem;
+            }
+
+            .file-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="player-wrapper">
-            {% if file_url.split('.')[-1].split('?')[0] in ['mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a'] or 'audio' in file_url %}
-            <audio controls autoplay>
-                <source src="{{ file_url }}" type="audio/mpeg">
-                Your browser does not support audio playback.
-            </audio>
-            {% else %}
-            <video controls autoplay>
-                <source src="{{ file_url }}">
-                Your browser does not support video playback.
-            </video>
-            {% endif %}
-        </div>
-        <div class="info">
-            <div class="file-name">{{ file_name }}</div>
-            <div class="file-meta">Size: {{ file_size }}</div>
-            <div class="btn-group">
-                <a href="{{ file_url }}" class="btn btn-download" download>📥 Download File</a>
+        <div class="player-card">
+            <div class="player-wrapper" id="playerWrapper">
+                {% if file_url.split('.')[-1].split('?')[0] in ['mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a'] or 'audio' in
+                file_url %}
+                <audio id="player" controls>
+                    <source src="{{ file_url }}" type="audio/mpeg">
+                    Your browser does not support audio playback.
+                </audio>
+                {% else %}
+                <video id="player" controls crossorigin playsinline>
+                    <source src="{{ file_url }}">
+                    Your browser does not support video playback.
+                </video>
+                {% endif %}
+            </div>
+            <div class="file-info">
+                <div class="file-header">
+                    <div class="file-icon">▶</div>
+                    <div class="file-details">
+                        <div class="file-name">{{ file_name }}</div>
+                        <div class="file-meta">
+                            <span>{{ file_size }}</span>
+                            <span class="meta-dot"></span>
+                            <span>FileToLink</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="{{ file_url }}" class="btn btn-primary" download>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                        </svg>
+                        Download
+                    </a>
+                    <a href="https://t.me/PikaFileToLinkBot" class="btn btn-secondary" target="_blank">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.28-.02-.12.03-2.02 1.28-5.69 3.77-.54.37-1.03.55-1.47.54-.48-.01-1.4-.27-2.09-.49-.84-.28-1.51-.42-1.45-.89.03-.25.38-.5 1.04-.78 4.07-1.77 6.79-2.94 8.15-3.5 3.88-1.62 4.69-1.9 5.21-1.91.12 0 .37.03.54.17.14.12.18.28.2.47-.01.06.01.24 0 .37z" />
+                        </svg>
+                        Open Bot
+                    </a>
+                </div>
             </div>
         </div>
+        <div class="footer">
+            Powered by <a href="https://t.me/pikachufrombd">@pikachufrombd</a> · FileToLink v3.0
+        </div>
     </div>
-    <div class="footer">
-        Powered by <a href="https://t.me/pikachufrombd">@pikachufrombd</a> — FileToLink v3.0
-    </div>
+
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <script>
+        const player = new Plyr('#player', {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['speed'],
+            speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+        });
+
+        // Audio mode styling
+        const audioEl = document.querySelector('audio');
+        if (audioEl) {
+            document.getElementById('playerWrapper').classList.add('audio-mode');
+        }
+    </script>
 </body>
+
 </html>
