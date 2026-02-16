@@ -376,28 +376,67 @@
     // ─── External Player Functions ───
     var videoUrl = "{{ file_url }}";
 
+    // Helper: detect platform
+    function isAndroid() {
+        return /android/i.test(navigator.userAgent);
+    }
+    function isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    }
+
+    // Helper: build Android intent URL
+    function androidIntent(pkg) {
+        var cleanUrl = videoUrl.replace(/^https?:\/\//, '');
+        var scheme = videoUrl.startsWith('https') ? 'https' : 'http';
+        return "intent://" + cleanUrl + "#Intent;scheme=" + scheme + ";package=" + pkg + ";type=video/*;end";
+    }
+
     function vlc_player() {
-        window.location.href = "vlc://" + videoUrl;
+        if (isAndroid()) {
+            window.location.href = androidIntent("org.videolan.vlc");
+        } else {
+            window.location.href = "vlc://" + videoUrl;
+        }
     }
 
     function mx_player() {
-        window.location.href = "intent:" + videoUrl + "#Intent;package=com.mxtech.videoplayer.ad;end";
+        if (isAndroid()) {
+            window.location.href = androidIntent("com.mxtech.videoplayer.ad");
+        } else {
+            window.location.href = videoUrl;
+        }
     }
 
     function playit_player() {
-        window.location.href = "intent:" + videoUrl + "#Intent;package=com.playit.videoplayer;end";
+        if (isAndroid()) {
+            window.location.href = androidIntent("com.playit.videoplayer");
+        } else {
+            window.location.href = videoUrl;
+        }
     }
 
     function km_player() {
-        window.location.href = "intent:" + videoUrl + "#Intent;package=com.kmplayer;end";
+        if (isAndroid()) {
+            window.location.href = androidIntent("com.kmplayer");
+        } else {
+            window.location.href = videoUrl;
+        }
     }
 
     function s_player() {
-        window.location.href = "intent:" + videoUrl + "#Intent;package=com.onezapp.splayer;end";
+        if (isAndroid()) {
+            window.location.href = androidIntent("com.onezapp.splayer");
+        } else {
+            window.location.href = videoUrl;
+        }
     }
 
     function hd_player() {
-        window.location.href = "intent:" + videoUrl + "#Intent;package=com.hdplayer.video;end";
+        if (isAndroid()) {
+            window.location.href = androidIntent("com.hdplayer.video");
+        } else {
+            window.location.href = videoUrl;
+        }
     }
 
     function bisalDownload() {
