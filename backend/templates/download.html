@@ -6,381 +6,817 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ file_name }} — Download</title>
     <meta name="description" content="Download {{ file_name }} — Powered by FileToLink">
+    <link rel="stylesheet" href="https://unpkg.com/sheryjs/dist/Shery.css" />
+    <link rel="stylesheet" href="https://biisal.github.io/Resources/StreamCSS.css">
+    <link rel="stylesheet" href="https://biisal.github.io/Resources/playerCss.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #08080d;
-            --bg-card: rgba(255, 255, 255, 0.03);
-            --bg-nav: rgba(8, 8, 13, 0.85);
-            --border: rgba(255, 255, 255, 0.07);
-            --text-primary: #f0f0f5;
-            --text-secondary: #7a7a8e;
-            --accent: #6c5ce7;
-            --accent-glow: rgba(108, 92, 231, 0.25);
-            --gradient-1: linear-gradient(135deg, #6c5ce7, #a855f7);
-            --radius: 20px;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
+        /* ─── Loading Screen ─── */
+        .loader-wrap {
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at 30% 40%, rgba(108, 92, 231, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 60%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
-            animation: bgShift 20s ease-in-out infinite alternate;
-            z-index: -1;
+            inset: 0;
+            z-index: 9999;
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        @keyframes bgShift {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            100% {
-                transform: translate(-3%, -3%);
-            }
+        .loader-wrap.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
 
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .loader-logo {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
-        @keyframes iconFloat {
+        .loader-logo span {
+            color: #ff003c;
+        }
+
+        .loader-spinner {
+            display: flex;
+            gap: 8px;
+        }
+
+        .loader-spinner div {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff003c;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .loader-spinner div:nth-child(2) {
+            animation-delay: 0.16s;
+        }
+
+        .loader-spinner div:nth-child(3) {
+            animation-delay: 0.32s;
+        }
+
+        @keyframes bounce {
 
             0%,
+            80%,
             100% {
-                transform: translateY(0);
+                transform: scale(0.3);
+                opacity: 0.3;
             }
 
-            50% {
-                transform: translateY(-5px);
+            40% {
+                transform: scale(1);
+                opacity: 1;
             }
         }
 
-        /* ─── Navbar ─── */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: var(--bg-nav);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .loader-text {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-primary);
+        /* ─── Logo color override ─── */
+        #heading span.logo-accent {
+            color: #ff003c !important;
         }
 
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: var(--gradient-1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            color: #fff;
+        /* ─── Force buttons visible ─── */
+        .downloadBtn button,
+        .links a,
+        .links button {
+            opacity: 1 !important;
         }
 
-        .logo-text {
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
+        /* ─── Remove movie section gap ─── */
+        .movie-cont {
+            display: none !important;
         }
 
-        .logo-text span {
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        /* ─── Hide Shery cursor on mobile ─── */
+        @media (max-width: 768px) {
+
+            .mousefollower,
+            .Shery-mousefollower,
+            #Shery-mouseFollower,
+            [class*="mousefollower"],
+            [class*="Shery"] {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
         }
 
-        .nav-btn {
-            display: flex;
+        /* ─── 3D Canvas Container ─── */
+        .three-container {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 10px;
+            position: relative;
+            cursor: grab;
+        }
+
+        .three-container:active {
+            cursor: grabbing;
+        }
+
+        .three-container canvas {
+            border-radius: 20px;
+        }
+
+        /* ─── File type badge ─── */
+        .file-type-badge {
+            display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.8rem;
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* ─── Main Content ─── */
-        .main {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: calc(100vh - 56px - 60px);
-            padding: 24px 16px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 420px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 40px 28px 32px;
-            text-align: center;
-            backdrop-filter: blur(30px);
-            animation: fadeUp 0.5s ease-out;
-        }
-
-        .file-icon-wrapper {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
-            border-radius: 22px;
-            background: var(--gradient-1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #fff;
-            box-shadow: 0 8px 28px var(--accent-glow);
-            animation: iconFloat 3s ease-in-out infinite;
-        }
-
-        .file-name {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            word-break: break-word;
-            line-height: 1.5;
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
             margin-bottom: 8px;
         }
 
-        .file-size {
-            font-size: 0.82rem;
-            color: var(--text-secondary);
-            margin-bottom: 28px;
+        /* ─── Download Card ─── */
+        .dl-card {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 40px 30px 35px;
+            text-align: center;
         }
 
-        .file-size .badge {
+        .dl-filename {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e8e8f0;
+            word-break: break-word;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .dl-size {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: rgba(108, 92, 231, 0.1);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-
-        .file-size .badge i {
-            font-size: 0.9rem;
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 8px;
-            width: 100%;
-            padding: 13px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: none;
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid rgba(255, 0, 60, 0.2);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #ff5577;
+            margin-bottom: 30px;
         }
 
-        .btn i {
-            font-size: 1.1rem;
-        }
-
-        .btn-primary {
-            background: var(--gradient-1);
-            color: #fff;
-            box-shadow: 0 4px 18px var(--accent-glow);
-            margin-bottom: 10px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 28px var(--accent-glow);
-        }
-
-        .btn-ghost {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 22px 0;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .info-item {
+        .dl-btn-primary {
             display: flex;
             align-items: center;
-            gap: 4px;
-        }
-
-        .info-item i {
-            font-size: 0.85rem;
-        }
-
-        /* ─── Footer ─── */
-        .footer {
-            text-align: center;
-            padding: 16px;
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-            opacity: 0.5;
-        }
-
-        .footer a {
-            color: var(--accent);
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px 28px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff003c, #ff4060);
+            color: #fff;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             text-decoration: none;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(255, 0, 60, 0.35);
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+
+        .dl-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(255, 0, 60, 0.45);
+        }
+
+        .dl-btn-ghost {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 13px 28px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #ccc;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dl-btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .dl-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 24px 0;
+        }
+
+        .dl-info {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dl-info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dl-info-item i {
+            font-size: 0.85rem;
+            color: #ff003c;
         }
 
         /* ─── Mobile ─── */
-        @media (max-width: 480px) {
-            .navbar {
-                padding: 0 14px;
-                height: 50px;
+        @media (max-width: 640px) {
+            .three-container {
+                width: 140px;
+                height: 140px;
             }
 
-            .logo-text {
-                font-size: 0.9rem;
+            .dl-card {
+                padding: 30px 18px 25px;
             }
 
-            .nav-btn {
-                padding: 6px 12px;
-                font-size: 0.75rem;
-            }
-
-            .card {
-                padding: 32px 20px 24px;
-            }
-
-            .file-icon-wrapper {
-                width: 68px;
-                height: 68px;
-                font-size: 1.7rem;
-                border-radius: 18px;
-            }
-
-            .file-name {
+            .dl-filename {
                 font-size: 0.95rem;
             }
 
-            .btn {
-                padding: 12px 20px;
-                font-size: 0.85rem;
+            .dl-btn-primary {
+                padding: 13px 24px;
+                font-size: 0.88rem;
+            }
+
+            .dl-btn-ghost {
+                padding: 11px 24px;
+                font-size: 0.8rem;
+            }
+
+            .dl-info {
+                gap: 16px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* ─── Responsive heading ─── */
+        @media (max-width: 480px) {
+            #heading {
+                font-size: 0.78rem !important;
+                white-space: nowrap;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a href="https://t.me/PikaFileToLinkBot" class="logo">
-            <div class="logo-icon"><i class="ri-link"></i></div>
-            <div class="logo-text"><span>FileToLink</span>Bot</div>
-        </a>
-        <a href="https://t.me/PikaFileToLinkBot" class="nav-btn" target="_blank">
-            <i class="ri-telegram-line"></i> Open Bot
-        </a>
+    <!-- ═══ LOADING SCREEN ═══ -->
+    <div class="loader-wrap" id="loader">
+        <div class="loader-logo"><span>FileToLink</span> by <span style="color: #4dabf7;">Team SixtyNine</span></div>
+        <div class="loader-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="loader-text">Preparing Download...</div>
+    </div>
+
+    <nav>
+        <div class="nleft">
+            <a href="https://t.me/PikaFileToLinkBot">
+                <h3 id="heading" style="z-index: 100;" class="magnet"><span class="logo-accent">FileToLink</span> by
+                    <span style="color: #4dabf7;">Team SixtyNine</span>
+                </h3>
+            </a>
+        </div>
+        <div class="nryt">
+            <a class="home-btn magnet" href="#main" onclick="toggleWidthnav(this)">Home</a>
+            <a href="#sec1" class="about-btn magnet" onclick="toggleWidthnav(this)">About</a>
+        </div>
     </nav>
+    <center>
+        <div class="about-nav">
+            <a href="#sec1" class="wlcm magnet" onclick="toggleWidth(this)">Welcome</a>
+            <a href="#sec2" class="abt-chnl magnet" onclick="toggleWidth(this)">Channels</a>
+            <a href="#sec3" class="magnet bot-btn" onclick="toggleWidth(this) , bot_btn_clicked()">Bots</a>
+            <a href="#sec4" class="magnet contact-btn" onclick="toggleWidth(this)">Let's Talk</a>
+        </div>
+    </center>
 
-    <!-- Main -->
-    <main class="main">
-        <div class="card">
-            <div class="file-icon-wrapper">
-                <i class="ri-file-3-line"></i>
+    <div class="outer">
+        <div class="inner">
+            <div class="main" id="main">
+                <!-- ═══ DOWNLOAD CARD ═══ -->
+                <div class="dl-card">
+                    <!-- 3D File Icon -->
+                    <div class="three-container" id="threeContainer"></div>
+
+                    <!-- Dynamic file type badge -->
+                    <div class="file-type-badge" id="fileTypeBadge"></div>
+
+                    <div class="dl-filename">{{ file_name }}</div>
+
+                    <div class="dl-size">
+                        <i class="fa-solid fa-hard-drive"></i> {{ file_size }}
+                    </div>
+
+                    <br>
+
+                    <a href="{{ file_url }}" class="dl-btn-primary magnet" download>
+                        <i class="fa-solid fa-download"></i> Download Now
+                    </a>
+
+                    <a href="https://t.me/PikaFileToLinkBot" class="dl-btn-ghost magnet" target="_blank">
+                        <i class="fa-brands fa-telegram"></i> Upload More Files in Bot
+                    </a>
+
+                    <div class="dl-divider"></div>
+
+                    <div class="dl-info">
+                        <div class="dl-info-item"><i class="fa-solid fa-shield-halved"></i> Secure</div>
+                        <div class="dl-info-item"><i class="fa-solid fa-bolt"></i> Fast</div>
+                        <div class="dl-info-item"><i class="fa-solid fa-infinity"></i> No Expiry</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="file-name">{{ file_name }}</div>
-            <div class="file-size">
-                <span class="badge"><i class="ri-hard-drive-3-line"></i> {{ file_size }}</span>
-            </div>
-
-            <a href="{{ file_url }}" class="btn btn-primary" download>
-                <i class="ri-download-2-line"></i> Download Now
-            </a>
-
-            <a href="https://t.me/PikaFileToLinkBot" class="btn btn-ghost" target="_blank">
-                <i class="ri-telegram-line"></i> Get More Files via Bot
-            </a>
-
-            <div class="divider"></div>
-            <div class="info-row">
-                <div class="info-item"><i class="ri-shield-check-line"></i> Secure</div>
-                <div class="info-item"><i class="ri-flashlight-line"></i> Fast</div>
-                <div class="info-item"><i class="ri-infinity-line"></i> No Expiry</div>
+            <!-- ═══ FULL ABOUT SECTION ═══ -->
+            <div class="abt">
+                <div class="about">
+                    <div class="about-dets">
+                        <div class="abt-sec" id="sec1" style="padding: 160px 30px;">
+                            <h1 style="text-align: center;">WELCOME TO OUR <span>STREAMING</span> PAGE</h1>
+                            <p style="text-align: center; line-height: 2; word-spacing: 2px; letter-spacing: 0.8px;">
+                                We're thrilled to have <span>you</span> here.
+                                Get ready for an amazing <span>experience</span>
+                                filled with <span>entertainment</span>, <span>fun</span>, and <span>surprises</span>.
+                                Grab your snacks, sit back, and <span>enjoy</span> the show!
+                            </p>
+                        </div>
+                        <div class="abt-sec" id="sec2">
+                            <h1>OUR ALL <span>CHANNELS</span> LIST</h1>
+                            <div class="links chnl-link">
+                                <a class="magnet" href="https://t.me/Team_SixtyNine"><button>Update Channel</button></a>
+                            </div>
+                        </div>
+                        <div class="abt-sec" id="sec3">
+                            <h1>OUR ALL <span>BOTS</span> LIST</h1>
+                            <div class="links bot-link">
+                                <a class="magnet" href="https://t.me/PikaFileToLinkBot"><button>FileToLink
+                                        Bot</button></a>
+                                <a class="magnet" href="https://t.me/TruecallerInfoLookupBot"><button>Truecaller Lookup
+                                        Bot</button></a>
+                            </div>
+                        </div>
+                        <div class="abt-sec" id="sec4">
+                            <p style="text-align: center;">We Can Talk For Your Support And You Can Report Through
+                                Telegram</p>
+                            <div class="links contact">
+                                <a href="https://t.me/listkiss"><button>Contact</button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
 
-    <div class="footer">
-        By <a href="https://t.me/listkiss">Shahadat Hassan</a> · FileToLink v3.0
+        <!-- ═══ FULL FOOTER ═══ -->
+        <footer>
+            <div class="mid">
+                <h1 class="mid-text">VISIT <a href="#sec3" onclick="bot_btn_clicked()"><span>OUR BOTS LIST</span></a>
+                    FOR MORE INFO</h1>
+            </div>
+
+            <div class="last-text">
+                <p style="font-weight: 500;">
+                    Welcome To Our Online Streaming Platform! Our Website Allows Users To Generate Streamable Links For
+                    Various Files Using Telegram Bots. Please Note That We Are Not Responsible For The Content Shared Or
+                    Streamed Through Our Service. Users Are Encouraged To Respect Copyright Laws And Adhere To Our
+                    Community Guidelines. Enjoy Easy, Hassle-Free File Streaming.
+                </p>
+            </div>
+
+            <center>
+                <div class="copyright">
+                    <h5 class="text-center">Copyright &copy; 2026 <a href="https://t.me/Team_SixtyNine"><span
+                                style="font-weight: 700; color: #4dabf7;">Team SixtyNine</span></a>. All Rights
+                        Reserved.</h5>
+                    <div class="icons">
+                        <a href="https://t.me/Team_SixtyNine"><i class="fa-brands fa-telegram fa-lg"></i></a>
+                    </div>
+                    <h4 style="font-weight: 700;">Made By <a href="https://t.me/listkiss"><span>Shahadat
+                                Hassan</span></a></h4>
+                </div>
+            </center>
+        </footer>
     </div>
 </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.155.0/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/automat/controlkit.js@master/bin/controlKit.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sheryjs/dist/Shery.js"></script>
+<script src="https://biisal.github.io/Resources/StreamJs.js"></script>
+
+<script>
+    // ─── Loading Screen ───
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            document.getElementById('loader').classList.add('hidden');
+        }, 1500);
+    });
+    setTimeout(function () {
+        var loader = document.getElementById('loader');
+        if (loader) loader.classList.add('hidden');
+    }, 4000);
+
+    // ─── File Type Detection ───
+    var fileName = "{{ file_name }}";
+    var ext = fileName.split('.').pop().toLowerCase();
+
+    var fileTypes = {
+        // Video
+        mp4: { icon: '\uf03d', label: 'VIDEO', color1: '#ff003c', color2: '#ff4060', glow: 'rgba(255,0,60,0.4)' },
+        mkv: { icon: '\uf03d', label: 'VIDEO', color1: '#ff003c', color2: '#ff4060', glow: 'rgba(255,0,60,0.4)' },
+        avi: { icon: '\uf03d', label: 'VIDEO', color1: '#ff003c', color2: '#ff4060', glow: 'rgba(255,0,60,0.4)' },
+        mov: { icon: '\uf03d', label: 'VIDEO', color1: '#ff003c', color2: '#ff4060', glow: 'rgba(255,0,60,0.4)' },
+        webm: { icon: '\uf03d', label: 'VIDEO', color1: '#ff003c', color2: '#ff4060', glow: 'rgba(255,0,60,0.4)' },
+        flv: { icon: '\uf03d', label: 'VIDEO', color1: '#ff003c', color2: '#ff4060', glow: 'rgba(255,0,60,0.4)' },
+        // Audio
+        mp3: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        wav: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        flac: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        ogg: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        aac: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        m4a: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        opus: { icon: '\uf001', label: 'AUDIO', color1: '#6c5ce7', color2: '#a855f7', glow: 'rgba(108,92,231,0.4)' },
+        // Image
+        jpg: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        jpeg: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        png: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        gif: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        webp: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        svg: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        bmp: { icon: '\uf03e', label: 'IMAGE', color1: '#00b894', color2: '#00cec9', glow: 'rgba(0,184,148,0.4)' },
+        // Archive
+        zip: { icon: '\uf1c6', label: 'ARCHIVE', color1: '#fdcb6e', color2: '#f39c12', glow: 'rgba(253,203,110,0.4)' },
+        rar: { icon: '\uf1c6', label: 'ARCHIVE', color1: '#fdcb6e', color2: '#f39c12', glow: 'rgba(253,203,110,0.4)' },
+        '7z': { icon: '\uf1c6', label: 'ARCHIVE', color1: '#fdcb6e', color2: '#f39c12', glow: 'rgba(253,203,110,0.4)' },
+        tar: { icon: '\uf1c6', label: 'ARCHIVE', color1: '#fdcb6e', color2: '#f39c12', glow: 'rgba(253,203,110,0.4)' },
+        gz: { icon: '\uf1c6', label: 'ARCHIVE', color1: '#fdcb6e', color2: '#f39c12', glow: 'rgba(253,203,110,0.4)' },
+        // Code
+        py: { icon: '\uf121', label: 'PYTHON', color1: '#0984e3', color2: '#74b9ff', glow: 'rgba(9,132,227,0.4)' },
+        js: { icon: '\uf121', label: 'CODE', color1: '#0984e3', color2: '#74b9ff', glow: 'rgba(9,132,227,0.4)' },
+        html: { icon: '\uf121', label: 'CODE', color1: '#0984e3', color2: '#74b9ff', glow: 'rgba(9,132,227,0.4)' },
+        css: { icon: '\uf121', label: 'CODE', color1: '#0984e3', color2: '#74b9ff', glow: 'rgba(9,132,227,0.4)' },
+        json: { icon: '\uf121', label: 'CODE', color1: '#0984e3', color2: '#74b9ff', glow: 'rgba(9,132,227,0.4)' },
+        // Documents
+        pdf: { icon: '\uf1c1', label: 'PDF', color1: '#e74c3c', color2: '#c0392b', glow: 'rgba(231,76,60,0.4)' },
+        doc: { icon: '\uf1c2', label: 'DOCUMENT', color1: '#2d7dd2', color2: '#2980b9', glow: 'rgba(45,125,210,0.4)' },
+        docx: { icon: '\uf1c2', label: 'DOCUMENT', color1: '#2d7dd2', color2: '#2980b9', glow: 'rgba(45,125,210,0.4)' },
+        txt: { icon: '\uf15c', label: 'TEXT', color1: '#636e72', color2: '#b2bec3', glow: 'rgba(99,110,114,0.4)' },
+        // APK
+        apk: { icon: '\uf3cd', label: 'APK', color1: '#00b894', color2: '#55efc4', glow: 'rgba(0,184,148,0.4)' },
+    };
+
+    var defaultType = { icon: '\uf15b', label: ext.toUpperCase() || 'FILE', color1: '#636e72', color2: '#b2bec3', glow: 'rgba(99,110,114,0.4)' };
+    var fileType = fileTypes[ext] || defaultType;
+
+    // ─── Set badge ───
+    var badge = document.getElementById('fileTypeBadge');
+    badge.style.background = 'rgba(' + hexToRgb(fileType.color1) + ', 0.15)';
+    badge.style.color = fileType.color1;
+    badge.style.border = '1px solid rgba(' + hexToRgb(fileType.color1) + ', 0.3)';
+    badge.innerHTML = '<i class="fa-solid fa-circle" style="font-size:6px"></i> ' + fileType.label + ' FILE';
+
+    function hexToRgb(hex) {
+        var r = parseInt(hex.slice(1, 3), 16);
+        var g = parseInt(hex.slice(3, 5), 16);
+        var b = parseInt(hex.slice(5, 7), 16);
+        return r + ',' + g + ',' + b;
+    }
+
+    // ─── THREE.JS 3D FILE ICON ───
+    (function () {
+        var container = document.getElementById('threeContainer');
+        var w = container.clientWidth;
+        var h = container.clientHeight;
+
+        // Scene
+        var scene = new THREE.Scene();
+
+        // Camera
+        var camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
+        camera.position.set(0, 0, 5);
+
+        // Renderer
+        var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Lights
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        var dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(3, 4, 5);
+        scene.add(dirLight);
+
+        var pointLight = new THREE.PointLight(new THREE.Color(fileType.color1), 2, 10);
+        pointLight.position.set(-2, 2, 3);
+        scene.add(pointLight);
+
+        var backLight = new THREE.PointLight(new THREE.Color(fileType.color2), 1.5, 10);
+        backLight.position.set(2, -1, -3);
+        scene.add(backLight);
+
+        // ─── Build 3D file shape ───
+        var group = new THREE.Group();
+
+        // File body (rounded box)
+        var bodyGeo = new THREE.BoxGeometry(1.6, 2, 0.25, 4, 4, 1);
+        var bodyMat = new THREE.MeshPhysicalMaterial({
+            color: new THREE.Color(fileType.color1),
+            metalness: 0.3,
+            roughness: 0.2,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+            transparent: true,
+            opacity: 0.92,
+        });
+        var bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+        group.add(bodyMesh);
+
+        // Folded corner
+        var foldGeo = new THREE.BufferGeometry();
+        var foldSize = 0.45;
+        var foldVerts = new Float32Array([
+            0.8 - foldSize, 1.0, 0.13,   // bottom-left of fold
+            0.8, 1.0, 0.13,               // bottom-right
+            0.8, 1.0 - foldSize, 0.13,    // top-right (folded)
+        ]);
+        foldGeo.setAttribute('position', new THREE.BufferAttribute(foldVerts, 3));
+        foldGeo.computeVertexNormals();
+        var foldMat = new THREE.MeshPhysicalMaterial({
+            color: new THREE.Color(fileType.color2),
+            metalness: 0.2,
+            roughness: 0.3,
+            side: THREE.DoubleSide,
+        });
+        var foldMesh = new THREE.Mesh(foldGeo, foldMat);
+        group.add(foldMesh);
+
+        // Extension label on the file
+        var canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 128;
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, 256, 128);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 64px Josefin Sans, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        var displayExt = ext ? '.' + ext.toUpperCase() : 'FILE';
+        ctx.fillText(displayExt, 128, 64);
+
+        var labelTexture = new THREE.CanvasTexture(canvas);
+        var labelGeo = new THREE.PlaneGeometry(1.2, 0.5);
+        var labelMat = new THREE.MeshBasicMaterial({
+            map: labelTexture,
+            transparent: true,
+            depthWrite: false,
+        });
+        var labelMesh = new THREE.Mesh(labelGeo, labelMat);
+        labelMesh.position.set(0, -0.3, 0.14);
+        group.add(labelMesh);
+
+        // Small icon indicator on file face
+        var iconCanvas = document.createElement('canvas');
+        iconCanvas.width = 128;
+        iconCanvas.height = 128;
+        var ictx = iconCanvas.getContext('2d');
+        ictx.clearRect(0, 0, 128, 128);
+        ictx.fillStyle = 'rgba(255,255,255,0.9)';
+        ictx.font = '64px "Font Awesome 6 Free"';
+        ictx.textAlign = 'center';
+        ictx.textBaseline = 'middle';
+        ictx.fillText(fileType.icon, 64, 64);
+
+        var iconTexture = new THREE.CanvasTexture(iconCanvas);
+        var iconGeo = new THREE.PlaneGeometry(0.65, 0.65);
+        var iconMat = new THREE.MeshBasicMaterial({
+            map: iconTexture,
+            transparent: true,
+            depthWrite: false,
+        });
+        var iconMesh = new THREE.Mesh(iconGeo, iconMat);
+        iconMesh.position.set(0, 0.35, 0.14);
+        group.add(iconMesh);
+
+        // Glow ring around the file
+        var ringGeo = new THREE.TorusGeometry(1.4, 0.02, 16, 64);
+        var ringMat = new THREE.MeshBasicMaterial({
+            color: new THREE.Color(fileType.color1),
+            transparent: true,
+            opacity: 0.3,
+        });
+        var ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        group.add(ring);
+
+        // Particle glow dots
+        var particleCount = 40;
+        var pGeo = new THREE.BufferGeometry();
+        var pPositions = new Float32Array(particleCount * 3);
+        for (var i = 0; i < particleCount; i++) {
+            var angle = (i / particleCount) * Math.PI * 2;
+            var radius = 1.5 + Math.random() * 0.5;
+            pPositions[i * 3] = Math.cos(angle) * radius;
+            pPositions[i * 3 + 1] = (Math.random() - 0.5) * 2;
+            pPositions[i * 3 + 2] = Math.sin(angle) * radius;
+        }
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+        var pMat = new THREE.PointsMaterial({
+            color: new THREE.Color(fileType.color2),
+            size: 0.04,
+            transparent: true,
+            opacity: 0.6,
+        });
+        var particles = new THREE.Points(pGeo, pMat);
+        group.add(particles);
+
+        scene.add(group);
+
+        // ─── Mouse interaction ───
+        var mouseX = 0, mouseY = 0;
+        var isDragging = false;
+        var prevX = 0, prevY = 0;
+        var rotVelX = 0, rotVelY = 0;
+
+        container.addEventListener('mousedown', function (e) {
+            isDragging = true;
+            prevX = e.clientX;
+            prevY = e.clientY;
+        });
+        window.addEventListener('mouseup', function () { isDragging = false; });
+        window.addEventListener('mousemove', function (e) {
+            if (isDragging) {
+                rotVelY += (e.clientX - prevX) * 0.005;
+                rotVelX += (e.clientY - prevY) * 0.005;
+                prevX = e.clientX;
+                prevY = e.clientY;
+            }
+            mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+        });
+
+        // Touch support
+        container.addEventListener('touchstart', function (e) {
+            isDragging = true;
+            prevX = e.touches[0].clientX;
+            prevY = e.touches[0].clientY;
+        });
+        container.addEventListener('touchend', function () { isDragging = false; });
+        container.addEventListener('touchmove', function (e) {
+            if (isDragging) {
+                rotVelY += (e.touches[0].clientX - prevX) * 0.005;
+                rotVelX += (e.touches[0].clientY - prevY) * 0.005;
+                prevX = e.touches[0].clientX;
+                prevY = e.touches[0].clientY;
+            }
+        });
+
+        // ─── Animation Loop ───
+        var clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            var t = clock.getElapsedTime();
+
+            // Auto rotation + drag
+            if (!isDragging) {
+                group.rotation.y += 0.008;
+            }
+            group.rotation.y += rotVelY;
+            group.rotation.x += rotVelX;
+            rotVelY *= 0.95;
+            rotVelX *= 0.95;
+
+            // Floating bob
+            group.position.y = Math.sin(t * 1.5) * 0.1;
+
+            // Subtle tilt towards mouse
+            if (!isDragging) {
+                group.rotation.x += (mouseY * 0.3 - group.rotation.x) * 0.02;
+            }
+
+            // Ring pulse
+            ring.scale.setScalar(1 + Math.sin(t * 2) * 0.05);
+            ring.material.opacity = 0.2 + Math.sin(t * 3) * 0.1;
+
+            // Particles orbit
+            particles.rotation.y = t * 0.3;
+            particles.rotation.x = Math.sin(t * 0.5) * 0.2;
+
+            // Glow pulse on point light
+            pointLight.intensity = 1.5 + Math.sin(t * 2) * 0.5;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize
+        window.addEventListener('resize', function () {
+            var newW = container.clientWidth;
+            var newH = container.clientHeight;
+            camera.aspect = newW / newH;
+            camera.updateProjectionMatrix();
+            renderer.setSize(newW, newH);
+        });
+    })();
+
+    // ─── Shery.js - Desktop Only ───
+    function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    }
+
+    if (!isMobile()) {
+        try {
+            Shery.mouseFollower({
+                skew: true,
+                ease: "cubic-bezier(0.23, 1, 0.320, 1)",
+                duration: 1,
+            });
+            Shery.makeMagnet(".magnet", {
+                ease: "cubic-bezier(0.23, 1, 0.320, 1)",
+                duration: 1,
+            });
+        } catch (e) {
+            console.log("Shery.js:", e);
+        }
+    }
+
+    // ─── Nav Functions ───
+    function toggleWidthnav(el) {
+        document.querySelectorAll('.nryt a').forEach(function (a) { a.style.width = ''; });
+        el.style.width = 'auto';
+    }
+
+    function toggleWidth(el) {
+        document.querySelectorAll('.about-nav a').forEach(function (a) { a.style.width = ''; });
+        el.style.width = 'auto';
+    }
+
+    function bot_btn_clicked() {
+        // handled by StreamJs.js
+    }
+
+    function getDets() {
+        // no-op
+    }
+</script>
 
 </html>
