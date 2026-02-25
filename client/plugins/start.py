@@ -223,18 +223,30 @@ async def ping(client, message):
     cpu = psutil.cpu_percent(interval=0.5)
     ram = psutil.virtual_memory()
     disk = psutil.disk_usage('/')
-    uptime_seconds = time.time() - BOT_START_TIME
 
-    # Format uptime
-    days, remainder = divmod(int(uptime_seconds), 86400)
+    # Bot uptime
+    bot_uptime = time.time() - BOT_START_TIME
+    days, remainder = divmod(int(bot_uptime), 86400)
     hours, remainder = divmod(remainder, 3600)
     minutes, seconds = divmod(remainder, 60)
     if days > 0:
-        uptime_str = f"{days}d {hours}h {minutes}m {seconds}s"
+        bot_uptime_str = f"{days}d {hours}h {minutes}m {seconds}s"
     elif hours > 0:
-        uptime_str = f"{hours}h {minutes}m {seconds}s"
+        bot_uptime_str = f"{hours}h {minutes}m {seconds}s"
     else:
-        uptime_str = f"{minutes}m {seconds}s"
+        bot_uptime_str = f"{minutes}m {seconds}s"
+
+    # System uptime
+    sys_uptime = time.time() - psutil.boot_time()
+    s_days, s_remainder = divmod(int(sys_uptime), 86400)
+    s_hours, s_remainder = divmod(s_remainder, 3600)
+    s_minutes, s_seconds = divmod(s_remainder, 60)
+    if s_days > 0:
+        sys_uptime_str = f"{s_days}d {s_hours}h {s_minutes}m {s_seconds}s"
+    elif s_hours > 0:
+        sys_uptime_str = f"{s_hours}h {s_minutes}m {s_seconds}s"
+    else:
+        sys_uptime_str = f"{s_minutes}m {s_seconds}s"
 
     text = (
         f"<b>🏓 Pong!</b>\n"
@@ -246,7 +258,9 @@ async def ping(client, message):
         f"({humanize.naturalsize(ram.used)}/{humanize.naturalsize(ram.total)})\n"
         f"💾 <b>Disk :</b> <code>{disk.percent}%</code> "
         f"({humanize.naturalsize(disk.used)}/{humanize.naturalsize(disk.total)})\n"
-        f"⏱ <b>Uptime :</b> <code>{uptime_str}</code>\n"
+        f"━━━━━━━━━━━━━━━━━━\n"
+        f"🤖 <b>Bot Uptime :</b> <code>{bot_uptime_str}</code>\n"
+        f"🖥 <b>Server Uptime :</b> <code>{sys_uptime_str}</code>\n"
         f"━━━━━━━━━━━━━━━━━━"
     )
 
