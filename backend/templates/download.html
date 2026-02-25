@@ -313,7 +313,7 @@
 <body>
     <!-- ═══ LOADING SCREEN ═══ -->
     <div class="loader-wrap" id="loader">
-        <div class="loader-logo"><span>FileToLink</span> by <span style="color: #4dabf7;">Team SixtyNine</span></div>
+        <div class="loader-logo"><span>FileToLink</span>Bot</div>
         <div class="loader-spinner">
             <div></div>
             <div></div>
@@ -544,21 +544,17 @@
         var w = container.clientWidth;
         var h = container.clientHeight;
 
-        // Scene
         var scene = new THREE.Scene();
-
-        // Camera
         var camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 100);
         camera.position.set(0, 0, 5);
 
-        // Renderer
         var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(w, h);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
         // Lights
-        var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
 
         var dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
@@ -573,208 +569,284 @@
         backLight.position.set(2, -1, -3);
         scene.add(backLight);
 
-        // ─── Build 3D file shape ───
         var group = new THREE.Group();
 
-        // File body (rounded box)
-        var bodyGeo = new THREE.BoxGeometry(1.6, 2, 0.25, 4, 4, 1);
+        // ─── File body ───
+        var bodyGeo = new THREE.BoxGeometry(1.6, 2, 0.2, 1, 1, 1);
         var bodyMat = new THREE.MeshPhysicalMaterial({
             color: new THREE.Color(fileType.color1),
-            metalness: 0.3,
-            roughness: 0.2,
+            metalness: 0.35,
+            roughness: 0.15,
             clearcoat: 1.0,
             clearcoatRoughness: 0.1,
             transparent: true,
-            opacity: 0.92,
+            opacity: 0.9,
         });
-        var bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-        group.add(bodyMesh);
+        var body = new THREE.Mesh(bodyGeo, bodyMat);
+        group.add(body);
 
-        // Folded corner
-        var foldGeo = new THREE.BufferGeometry();
-        var foldSize = 0.45;
-        var foldVerts = new Float32Array([
-            0.8 - foldSize, 1.0, 0.13,   // bottom-left of fold
-            0.8, 1.0, 0.13,               // bottom-right
-            0.8, 1.0 - foldSize, 0.13,    // top-right (folded)
-        ]);
-        foldGeo.setAttribute('position', new THREE.BufferAttribute(foldVerts, 3));
-        foldGeo.computeVertexNormals();
+        // ─── Folded corner (top-right) ───
+        var foldSize = 0.4;
+        var foldShape = new THREE.Shape();
+        foldShape.moveTo(0, 0);
+        foldShape.lineTo(foldSize, 0);
+        foldShape.lineTo(0, -foldSize);
+        foldShape.lineTo(0, 0);
+        var foldGeo = new THREE.ShapeGeometry(foldShape);
         var foldMat = new THREE.MeshPhysicalMaterial({
             color: new THREE.Color(fileType.color2),
             metalness: 0.2,
             roughness: 0.3,
             side: THREE.DoubleSide,
         });
-        var foldMesh = new THREE.Mesh(foldGeo, foldMat);
-        group.add(foldMesh);
+        var fold = new THREE.Mesh(foldGeo, foldMat);
+        fold.position.set(0.8 - foldSize, 1.01, 0.11);
+        group.add(fold);
 
-        // Extension label on the file
+        // ─── Extension text on BOTH sides ───
         var canvas = document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 128;
+        canvas.width = 512;
+        canvas.height = 256;
         var ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, 256, 128);
+        ctx.clearRect(0, 0, 512, 256);
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 64px Josefin Sans, Arial, sans-serif';
+        ctx.font = 'bold 100px Arial, Helvetica, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         var displayExt = ext ? '.' + ext.toUpperCase() : 'FILE';
-        ctx.fillText(displayExt, 128, 64);
-
+        ctx.fillText(displayExt, 256, 128);
         var labelTexture = new THREE.CanvasTexture(canvas);
+
+        // Front label
         var labelGeo = new THREE.PlaneGeometry(1.2, 0.5);
-        var labelMat = new THREE.MeshBasicMaterial({
-            map: labelTexture,
-            transparent: true,
-            depthWrite: false,
-        });
-        var labelMesh = new THREE.Mesh(labelGeo, labelMat);
-        labelMesh.position.set(0, -0.3, 0.14);
-        group.add(labelMesh);
+        var labelMat = new THREE.MeshBasicMaterial({ map: labelTexture, transparent: true, depthWrite: false });
+        var frontLabel = new THREE.Mesh(labelGeo, labelMat);
+        frontLabel.position.set(0, -0.55, 0.11);
+        group.add(frontLabel);
 
-        // Small icon indicator on file face
-        var iconCanvas = document.createElement('canvas');
-        iconCanvas.width = 128;
-        iconCanvas.height = 128;
-        var ictx = iconCanvas.getContext('2d');
-        ictx.clearRect(0, 0, 128, 128);
-        ictx.fillStyle = 'rgba(255,255,255,0.9)';
-        ictx.font = '64px "Font Awesome 6 Free"';
-        ictx.textAlign = 'center';
-        ictx.textBaseline = 'middle';
-        ictx.fillText(fileType.icon, 64, 64);
+        // Back label
+        var backLabel = new THREE.Mesh(labelGeo, labelMat.clone());
+        backLabel.position.set(0, -0.55, -0.11);
+        backLabel.rotation.y = Math.PI;
+        group.add(backLabel);
 
-        var iconTexture = new THREE.CanvasTexture(iconCanvas);
-        var iconGeo = new THREE.PlaneGeometry(0.65, 0.65);
-        var iconMat = new THREE.MeshBasicMaterial({
-            map: iconTexture,
-            transparent: true,
-            depthWrite: false,
-        });
-        var iconMesh = new THREE.Mesh(iconGeo, iconMat);
-        iconMesh.position.set(0, 0.35, 0.14);
-        group.add(iconMesh);
+        // ─── 3D Symbol on file face (pure geometry, no Font Awesome) ───
+        function buildSymbol() {
+            var symbolGroup = new THREE.Group();
+            var whiteMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.1, roughness: 0.4 });
+            var accentMat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(fileType.color2), metalness: 0.2, roughness: 0.3 });
 
-        // Glow ring around the file
+            var cat = fileType.label;
+
+            if (cat === 'VIDEO') {
+                // Play triangle
+                var triShape = new THREE.Shape();
+                triShape.moveTo(-0.15, -0.2);
+                triShape.lineTo(-0.15, 0.2);
+                triShape.lineTo(0.2, 0);
+                triShape.lineTo(-0.15, -0.2);
+                var triGeo = new THREE.ExtrudeGeometry(triShape, { depth: 0.08, bevelEnabled: false });
+                var tri = new THREE.Mesh(triGeo, whiteMat);
+                tri.position.z = -0.04;
+                symbolGroup.add(tri);
+            } else if (cat === 'AUDIO') {
+                // Equalizer bars
+                var heights = [0.15, 0.28, 0.22, 0.32, 0.18];
+                for (var i = 0; i < 5; i++) {
+                    var barGeo = new THREE.BoxGeometry(0.05, heights[i], 0.08);
+                    var bar = new THREE.Mesh(barGeo, i % 2 === 0 ? whiteMat : accentMat);
+                    bar.position.set(-0.15 + i * 0.075, heights[i] / 2 - 0.15, 0);
+                    symbolGroup.add(bar);
+                }
+            } else if (cat === 'IMAGE') {
+                // Mountain + sun
+                var mtnShape = new THREE.Shape();
+                mtnShape.moveTo(-0.25, -0.15);
+                mtnShape.lineTo(-0.05, 0.15);
+                mtnShape.lineTo(0.08, 0.0);
+                mtnShape.lineTo(0.22, 0.1);
+                mtnShape.lineTo(0.25, -0.15);
+                mtnShape.lineTo(-0.25, -0.15);
+                var mtnGeo = new THREE.ExtrudeGeometry(mtnShape, { depth: 0.06, bevelEnabled: false });
+                var mtn = new THREE.Mesh(mtnGeo, whiteMat);
+                mtn.position.z = -0.03;
+                symbolGroup.add(mtn);
+                var sunGeo = new THREE.SphereGeometry(0.06, 16, 16);
+                var sun = new THREE.Mesh(sunGeo, accentMat);
+                sun.position.set(0.15, 0.15, 0);
+                symbolGroup.add(sun);
+            } else if (cat === 'ARCHIVE') {
+                // 3D cube / box
+                var cubeGeo = new THREE.BoxGeometry(0.28, 0.28, 0.28);
+                var cubeMat = new THREE.MeshPhysicalMaterial({
+                    color: new THREE.Color(fileType.color2),
+                    metalness: 0.4,
+                    roughness: 0.2,
+                    transparent: true,
+                    opacity: 0.85,
+                });
+                var cube = new THREE.Mesh(cubeGeo, cubeMat);
+                cube.rotation.set(0.4, 0.4, 0);
+                symbolGroup.add(cube);
+                // Wireframe
+                var wireGeo = new THREE.EdgesGeometry(cubeGeo);
+                var wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
+                var wire = new THREE.LineSegments(wireGeo, wireMat);
+                wire.rotation.set(0.4, 0.4, 0);
+                symbolGroup.add(wire);
+            } else if (cat === 'PYTHON' || cat === 'CODE') {
+                // Code brackets < />
+                var bracketMat = whiteMat;
+                // Left bracket <
+                var lbShape = new THREE.Shape();
+                lbShape.moveTo(0.05, 0.15);
+                lbShape.lineTo(-0.12, 0);
+                lbShape.lineTo(0.05, -0.15);
+                var lbGeo = new THREE.ExtrudeGeometry(lbShape, { depth: 0.05, bevelEnabled: false });
+                var lb = new THREE.Mesh(lbGeo, bracketMat);
+                lb.position.set(-0.1, 0, -0.025);
+                symbolGroup.add(lb);
+                // Right bracket >
+                var rbShape = new THREE.Shape();
+                rbShape.moveTo(-0.05, 0.15);
+                rbShape.lineTo(0.12, 0);
+                rbShape.lineTo(-0.05, -0.15);
+                var rbGeo = new THREE.ExtrudeGeometry(rbShape, { depth: 0.05, bevelEnabled: false });
+                var rb = new THREE.Mesh(rbGeo, bracketMat);
+                rb.position.set(0.1, 0, -0.025);
+                symbolGroup.add(rb);
+                // Slash /
+                var slashGeo = new THREE.BoxGeometry(0.03, 0.3, 0.05);
+                var slash = new THREE.Mesh(slashGeo, accentMat);
+                slash.rotation.z = -0.3;
+                symbolGroup.add(slash);
+            } else if (cat === 'PDF') {
+                // PDF text
+                var pdfCanvas = document.createElement('canvas');
+                pdfCanvas.width = 256;
+                pdfCanvas.height = 128;
+                var pctx = pdfCanvas.getContext('2d');
+                pctx.clearRect(0, 0, 256, 128);
+                pctx.fillStyle = '#ffffff';
+                pctx.font = 'bold 80px Arial, Helvetica, sans-serif';
+                pctx.textAlign = 'center';
+                pctx.textBaseline = 'middle';
+                pctx.fillText('PDF', 128, 64);
+                var pdfTex = new THREE.CanvasTexture(pdfCanvas);
+                var pdfGeo = new THREE.PlaneGeometry(0.5, 0.25);
+                var pdfMat = new THREE.MeshBasicMaterial({ map: pdfTex, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+                var pdfMesh = new THREE.Mesh(pdfGeo, pdfMat);
+                symbolGroup.add(pdfMesh);
+            } else if (cat === 'APK') {
+                // Android-style robot head
+                var headGeo = new THREE.SphereGeometry(0.15, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+                var head = new THREE.Mesh(headGeo, accentMat);
+                head.position.y = -0.02;
+                symbolGroup.add(head);
+                var bodyGeo2 = new THREE.CylinderGeometry(0.15, 0.15, 0.15, 16, 1, true);
+                var bodyM = new THREE.Mesh(bodyGeo2, accentMat);
+                bodyM.position.y = -0.1;
+                symbolGroup.add(bodyM);
+                // Eyes
+                var eyeGeo = new THREE.SphereGeometry(0.025, 8, 8);
+                var eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                var eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+                eyeL.position.set(-0.06, 0.04, 0.12);
+                symbolGroup.add(eyeL);
+                var eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+                eyeR.position.set(0.06, 0.04, 0.12);
+                symbolGroup.add(eyeR);
+            } else {
+                // Default: generic document lines
+                for (var j = 0; j < 3; j++) {
+                    var lineW = j === 0 ? 0.35 : (j === 1 ? 0.28 : 0.2);
+                    var lineGeo = new THREE.BoxGeometry(lineW, 0.035, 0.05);
+                    var lineMesh = new THREE.Mesh(lineGeo, j === 0 ? whiteMat : accentMat);
+                    lineMesh.position.set(-(0.35 - lineW) / 2, 0.08 - j * 0.1, 0);
+                    symbolGroup.add(lineMesh);
+                }
+            }
+
+            return symbolGroup;
+        }
+
+        var symbol = buildSymbol();
+        symbol.position.set(0, 0.25, 0.12);
+        group.add(symbol);
+
+        // Same symbol on back
+        var symbolBack = buildSymbol();
+        symbolBack.position.set(0, 0.25, -0.12);
+        symbolBack.rotation.y = Math.PI;
+        group.add(symbolBack);
+
+        // ─── Glow ring ───
         var ringGeo = new THREE.TorusGeometry(1.4, 0.02, 16, 64);
-        var ringMat = new THREE.MeshBasicMaterial({
-            color: new THREE.Color(fileType.color1),
-            transparent: true,
-            opacity: 0.3,
-        });
+        var ringMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(fileType.color1), transparent: true, opacity: 0.3 });
         var ring = new THREE.Mesh(ringGeo, ringMat);
         ring.rotation.x = Math.PI / 2;
         group.add(ring);
 
-        // Particle glow dots
+        // ─── Orbiting particles ───
         var particleCount = 40;
         var pGeo = new THREE.BufferGeometry();
-        var pPositions = new Float32Array(particleCount * 3);
+        var pPos = new Float32Array(particleCount * 3);
         for (var i = 0; i < particleCount; i++) {
             var angle = (i / particleCount) * Math.PI * 2;
             var radius = 1.5 + Math.random() * 0.5;
-            pPositions[i * 3] = Math.cos(angle) * radius;
-            pPositions[i * 3 + 1] = (Math.random() - 0.5) * 2;
-            pPositions[i * 3 + 2] = Math.sin(angle) * radius;
+            pPos[i * 3] = Math.cos(angle) * radius;
+            pPos[i * 3 + 1] = (Math.random() - 0.5) * 2;
+            pPos[i * 3 + 2] = Math.sin(angle) * radius;
         }
-        pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
-        var pMat = new THREE.PointsMaterial({
-            color: new THREE.Color(fileType.color2),
-            size: 0.04,
-            transparent: true,
-            opacity: 0.6,
-        });
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        var pMat = new THREE.PointsMaterial({ color: new THREE.Color(fileType.color2), size: 0.04, transparent: true, opacity: 0.6 });
         var particles = new THREE.Points(pGeo, pMat);
         group.add(particles);
 
         scene.add(group);
 
-        // ─── Mouse interaction ───
-        var mouseX = 0, mouseY = 0;
-        var isDragging = false;
-        var prevX = 0, prevY = 0;
-        var rotVelX = 0, rotVelY = 0;
+        // ─── Mouse / Touch interaction ───
+        var mouseX = 0, mouseY = 0, isDragging = false, prevX = 0, prevY = 0, rotVelX = 0, rotVelY = 0;
 
-        container.addEventListener('mousedown', function (e) {
-            isDragging = true;
-            prevX = e.clientX;
-            prevY = e.clientY;
-        });
+        container.addEventListener('mousedown', function (e) { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
         window.addEventListener('mouseup', function () { isDragging = false; });
         window.addEventListener('mousemove', function (e) {
-            if (isDragging) {
-                rotVelY += (e.clientX - prevX) * 0.005;
-                rotVelX += (e.clientY - prevY) * 0.005;
-                prevX = e.clientX;
-                prevY = e.clientY;
-            }
+            if (isDragging) { rotVelY += (e.clientX - prevX) * 0.005; rotVelX += (e.clientY - prevY) * 0.005; prevX = e.clientX; prevY = e.clientY; }
             mouseX = (e.clientX / window.innerWidth) * 2 - 1;
             mouseY = (e.clientY / window.innerHeight) * 2 - 1;
         });
-
-        // Touch support
-        container.addEventListener('touchstart', function (e) {
-            isDragging = true;
-            prevX = e.touches[0].clientX;
-            prevY = e.touches[0].clientY;
-        });
+        container.addEventListener('touchstart', function (e) { isDragging = true; prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; });
         container.addEventListener('touchend', function () { isDragging = false; });
         container.addEventListener('touchmove', function (e) {
-            if (isDragging) {
-                rotVelY += (e.touches[0].clientX - prevX) * 0.005;
-                rotVelX += (e.touches[0].clientY - prevY) * 0.005;
-                prevX = e.touches[0].clientX;
-                prevY = e.touches[0].clientY;
-            }
+            if (isDragging) { rotVelY += (e.touches[0].clientX - prevX) * 0.005; rotVelX += (e.touches[0].clientY - prevY) * 0.005; prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; }
         });
 
-        // ─── Animation Loop ───
+        // ─── Animation ───
         var clock = new THREE.Clock();
-
         function animate() {
             requestAnimationFrame(animate);
             var t = clock.getElapsedTime();
-
-            // Auto rotation + drag
-            if (!isDragging) {
-                group.rotation.y += 0.008;
-            }
+            if (!isDragging) { group.rotation.y += 0.008; }
             group.rotation.y += rotVelY;
             group.rotation.x += rotVelX;
             rotVelY *= 0.95;
             rotVelX *= 0.95;
-
-            // Floating bob
             group.position.y = Math.sin(t * 1.5) * 0.1;
-
-            // Subtle tilt towards mouse
-            if (!isDragging) {
-                group.rotation.x += (mouseY * 0.3 - group.rotation.x) * 0.02;
-            }
-
-            // Ring pulse
+            if (!isDragging) { group.rotation.x += (mouseY * 0.3 - group.rotation.x) * 0.02; }
             ring.scale.setScalar(1 + Math.sin(t * 2) * 0.05);
             ring.material.opacity = 0.2 + Math.sin(t * 3) * 0.1;
-
-            // Particles orbit
             particles.rotation.y = t * 0.3;
             particles.rotation.x = Math.sin(t * 0.5) * 0.2;
-
-            // Glow pulse on point light
             pointLight.intensity = 1.5 + Math.sin(t * 2) * 0.5;
-
             renderer.render(scene, camera);
         }
         animate();
 
-        // Resize
         window.addEventListener('resize', function () {
-            var newW = container.clientWidth;
-            var newH = container.clientHeight;
-            camera.aspect = newW / newH;
+            var nw = container.clientWidth, nh = container.clientHeight;
+            camera.aspect = nw / nh;
             camera.updateProjectionMatrix();
-            renderer.setSize(newW, newH);
+            renderer.setSize(nw, nh);
         });
     })();
 
