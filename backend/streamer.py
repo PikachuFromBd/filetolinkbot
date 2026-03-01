@@ -18,7 +18,7 @@ class ByteStreamer:
     """
 
     def __init__(self, client: Client):
-        self.clean_timer = 30 * 60  # 30 minutes
+        self.clean_timer = 30 * 60  # 30 minute
         self.client = client
         self.cached_file_ids: Dict[int, FileId] = {}
         asyncio.create_task(self.clean_cache())
